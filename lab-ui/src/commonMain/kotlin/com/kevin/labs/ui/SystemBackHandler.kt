@@ -1,4 +1,4 @@
-package com.kevin.labs
+package com.kevin.labs.ui
 
 import androidx.compose.runtime.Composable
 

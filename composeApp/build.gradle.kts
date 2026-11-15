@@ -33,11 +33,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(libs.material.icons.core)
+            implementation(projects.labUi)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

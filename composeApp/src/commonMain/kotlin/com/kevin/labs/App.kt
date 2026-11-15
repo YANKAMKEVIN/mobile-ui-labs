@@ -22,10 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,30 +34,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-private val Paper = Color(0xFFF5F0E8)
-private val Ink = Color(0xFF111713)
-private val Muted = Color(0xFF667068)
-private val Line = Color(0xFFE0D6C8)
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.SystemBackHandler
 
 @Composable
 fun App() {
-    MaterialTheme(colorScheme = lightColorScheme(background = Paper, surface = Color.White)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = Paper) {
-            // The open lab is saved by id, so rotation or process death brings the user back to it.
-            var openId by rememberSaveable { mutableStateOf<String?>(null) }
-            val open = labs.firstOrNull { it.id == openId }
-            if (open == null) {
-                Catalog(onOpen = { openId = it.id })
-            } else {
-                LabScreen(lab = open, onBack = { openId = null })
-            }
+    LabTheme(primary = Ink, secondary = Muted) {
+        // The open lab is saved by id, so rotation or process death brings the user back to it.
+        var openId by rememberSaveable { mutableStateOf<String?>(null) }
+        val open = labs.firstOrNull { it.id == openId }
+        if (open == null) {
+            Catalog(onOpen = { openId = it.id })
+        } else {
+            LabScreen(lab = open, onBack = { openId = null })
         }
     }
 }
@@ -75,24 +72,11 @@ fun Catalog(onOpen: (Lab) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Column(
-                modifier = Modifier.padding(bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = "Mobile UI Labs",
-                    modifier = Modifier.semantics { heading() },
-                    color = Ink,
-                    fontWeight = FontWeight.Black,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-                Text(
-                    text = "Ten small Compose Multiplatform labs, one UX decision each.",
-                    color = Muted,
-                    lineHeight = 23.sp,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+            LabHeader(
+                title = "Mobile UI Labs",
+                subtitle = "Ten small Compose Multiplatform labs, one UX decision each.",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
         }
         items(labs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
     }

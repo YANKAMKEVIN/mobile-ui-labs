@@ -1,4 +1,4 @@
-package com.kevin.navigationbackstacklab
+package com.kevin.labs.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
