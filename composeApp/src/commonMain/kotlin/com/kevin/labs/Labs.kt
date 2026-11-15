@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.kevin.adaptivelayoutlab.App as AdaptiveLayoutLab
 import com.kevin.bottomsheetplaybook.App as BottomSheetPlaybook
 import com.kevin.emptystategallery.App as EmptyStateGallery
+import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -37,5 +38,12 @@ val labs: List<Lab> = listOf(
         summary = "First use, no results, offline, permission, error: what to say and do.",
         accent = Color(0xFF1B5E4A),
         content = { EmptyStateGallery() }
+    ),
+    Lab(
+        id = "feedback-surface-lab",
+        title = "Feedback Surface Lab",
+        summary = "Snackbar, undo, inline error, banner or blocking dialog: where feedback lives.",
+        accent = Color(0xFF0F6B55),
+        content = { FeedbackSurfaceLab() }
     ),
 )
