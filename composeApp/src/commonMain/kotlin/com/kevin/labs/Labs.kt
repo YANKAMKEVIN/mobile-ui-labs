@@ -7,6 +7,7 @@ import com.kevin.bottomsheetplaybook.App as BottomSheetPlaybook
 import com.kevin.emptystategallery.App as EmptyStateGallery
 import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
 import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
+import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -53,5 +54,12 @@ val labs: List<Lab> = listOf(
         summary = "Inline spinner, skeleton, steps, optimistic UI: progress after an action.",
         accent = Color(0xFF0E6251),
         content = { LoadingUxPatterns() }
+    ),
+    Lab(
+        id = "navigation-backstack-lab",
+        title = "Navigation Backstack Lab",
+        summary = "A real back stack: tabs, nested routes, modal layer, deep links and Back.",
+        accent = Color(0xFF2864A8),
+        content = { NavigationBackstackLab() }
     ),
 )
