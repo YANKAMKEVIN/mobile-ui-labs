@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.RuleCard
 import kotlinx.coroutines.delay
 
 @Composable
@@ -186,7 +186,13 @@ private fun LoadingGallery() {
                 )
             }
         }
-        item { DecisionCard(pattern = selected) }
+        item {
+            RuleCard(
+                title = "Decision rule",
+                rule = selected.note,
+                accent = selected.accent
+            )
+        }
     }
 }
 
@@ -410,32 +416,3 @@ private fun OptimisticState(isLoading: Boolean, completed: Boolean, accent: Colo
     }
 }
 
-@Composable
-private fun DecisionCard(pattern: LoadingPattern) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF151A17)),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Check,
-                contentDescription = null,
-                tint = Color(0xFFCFF7DF)
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Decision rule", color = Color.White, fontWeight = FontWeight.Bold)
-                Text(
-                    text = pattern.note,
-                    color = Color(0xFFD8DFDA),
-                    lineHeight = 20.sp
-                )
-            }
-        }
-    }
-}

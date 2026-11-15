@@ -62,6 +62,7 @@ import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
 import kotlinx.coroutines.launch
 
 @Composable
@@ -178,7 +179,7 @@ private fun BottomSheetPlaybook() {
                     SheetPreview(pattern = pattern, onOpen = { openPattern = pattern })
                 }
             }
-            item { DecisionRule(selected) }
+            item { RuleCard(title = "Decision rule", rule = selected.rule) }
         }
 
         if (openPattern != null) {
@@ -470,23 +471,6 @@ private fun ActionRow(label: String, accent: Color, destructive: Boolean) {
                 color = if (destructive) Danger else Ink,
                 fontWeight = FontWeight.Bold
             )
-        }
-    }
-}
-
-@Composable
-private fun DecisionRule(pattern: SheetPattern) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = Ink
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text("Decision rule", color = Color.White, fontWeight = FontWeight.Black)
-            Text(pattern.rule, color = Color(0xFFDDE4DE), lineHeight = 20.sp)
         }
     }
 }

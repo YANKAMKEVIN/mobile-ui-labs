@@ -69,6 +69,8 @@ import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.StatusDot
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
@@ -210,7 +212,7 @@ private fun SwipeActionLab() {
                     )
                 }
             }
-            item { RuleCard(selected) }
+            item { RuleCard(title = "Decision rule", rule = selected.rule) }
             item { Spacer(Modifier.height(74.dp)) }
         }
 
@@ -450,34 +452,3 @@ private fun ActionGlyph(pattern: SwipePattern) {
     }
 }
 
-@Composable
-private fun StatusDot(color: Color) {
-    Box(
-        modifier = Modifier
-            .size(26.dp)
-            .clip(CircleShape)
-            .background(color.copy(alpha = 0.16f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(9.dp)
-                .clip(CircleShape)
-                .background(color)
-        )
-    }
-}
-
-@Composable
-private fun RuleCard(pattern: SwipePattern) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = Ink
-    ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Decision rule", color = Color.White, fontWeight = FontWeight.Black)
-            Text(pattern.rule, color = Color(0xFFDDE4DE), lineHeight = 20.sp)
-        }
-    }
-}

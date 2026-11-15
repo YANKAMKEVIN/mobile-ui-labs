@@ -21,11 +21,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,6 +45,7 @@ import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
 
 @Composable
 fun App() {
@@ -167,8 +165,10 @@ private fun OfflineFirstNotes() {
         }
         item {
             RuleCard(
-                copy = selected,
-                modifier = Modifier.padding(horizontal = 20.dp)
+                title = "Sync rule",
+                rule = selected.rule,
+                modifier = Modifier.padding(horizontal = 20.dp),
+                accent = selected.accent
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
@@ -221,7 +221,7 @@ private fun NoteEditor(copy: SyncCopy) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                StatusDot(copy)
+                SyncBadge(copy)
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Trip notes",
@@ -360,7 +360,7 @@ private fun VersionCard(label: String, detail: String, color: Color, modifier: M
 }
 
 @Composable
-private fun StatusDot(copy: SyncCopy) {
+private fun SyncBadge(copy: SyncCopy) {
     Box(
         modifier = Modifier
             .size(42.dp)
@@ -380,50 +380,6 @@ private fun StatusDot(copy: SyncCopy) {
             fontWeight = FontWeight.Black,
             fontSize = 13.sp
         )
-    }
-}
-
-@Composable
-private fun RuleCard(copy: SyncCopy, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = Ink
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(copy.accent),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-                Text(
-                    text = "Sync rule",
-                    color = Color.White,
-                    fontWeight = FontWeight.Black
-                )
-            }
-            Text(
-                text = copy.rule,
-                color = Color(0xFFECE7DC),
-                lineHeight = 22.sp
-            )
-        }
     }
 }
 

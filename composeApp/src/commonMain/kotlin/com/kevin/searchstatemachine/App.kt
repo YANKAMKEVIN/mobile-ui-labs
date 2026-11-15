@@ -27,11 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,6 +57,7 @@ import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
 import kotlinx.coroutines.delay
 
 @Composable
@@ -220,8 +218,10 @@ private fun SearchStateMachine() {
         }
         item {
             RuleCard(
-                copy = selected,
-                modifier = Modifier.padding(horizontal = 20.dp)
+                title = "State rule",
+                rule = selected.rule,
+                modifier = Modifier.padding(horizontal = 20.dp),
+                accent = selected.accent
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
@@ -646,46 +646,3 @@ private fun RecoveryAction(label: String, color: Color, onClick: () -> Unit) {
     }
 }
 
-@Composable
-private fun RuleCard(copy: SearchCopy, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = Ink
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(copy.accent),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-                Text(
-                    text = "State rule",
-                    color = Color.White,
-                    fontWeight = FontWeight.Black
-                )
-            }
-            Text(
-                text = copy.rule,
-                color = Color(0xFFECE7DC),
-                lineHeight = 22.sp
-            )
-        }
-    }
-}

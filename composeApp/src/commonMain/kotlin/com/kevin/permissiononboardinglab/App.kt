@@ -54,6 +54,7 @@ import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
 
 @Composable
 fun App() {
@@ -177,7 +178,7 @@ private fun PermissionOnboardingLab() {
                 PermissionPreview(steps.first { it.step == shown.step }, shown, onAction)
             }
         }
-        item { RuleCard(selected) }
+        item { RuleCard(title = "Decision rule", rule = selected.rule) }
     }
 }
 
@@ -429,20 +430,6 @@ private fun FeatureRow(text: String, accent: Color) {
                     .background(accent)
             )
             Text(text, color = Ink, fontWeight = FontWeight.Bold, lineHeight = 18.sp)
-        }
-    }
-}
-
-@Composable
-private fun RuleCard(step: StepCopy) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = Ink
-    ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Decision rule", color = Color.White, fontWeight = FontWeight.Black)
-            Text(step.rule, color = Color(0xFFDDE4DE), lineHeight = 20.sp)
         }
     }
 }

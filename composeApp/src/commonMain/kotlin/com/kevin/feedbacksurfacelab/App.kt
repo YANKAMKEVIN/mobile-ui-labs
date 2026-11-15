@@ -18,10 +18,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -62,6 +60,8 @@ import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.StatusDot
 import kotlinx.coroutines.launch
 
 @Composable
@@ -206,7 +206,7 @@ private fun FeedbackSurfaceLab() {
                     )
                 }
             }
-            item { RuleCard(selected) }
+            item { RuleCard(title = "Decision rule", rule = selected.rule) }
             item { Spacer(Modifier.height(74.dp)) }
         }
 
@@ -380,24 +380,6 @@ private fun MockProductSurface(
 }
 
 @Composable
-private fun StatusDot(color: Color) {
-    Box(
-        modifier = Modifier
-            .size(28.dp)
-            .clip(CircleShape)
-            .background(color.copy(alpha = 0.15f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(10.dp)
-                .clip(CircleShape)
-                .background(color)
-        )
-    }
-}
-
-@Composable
 private fun FieldPreview(label: String, value: String, error: Boolean) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(label, color = Muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
@@ -421,20 +403,6 @@ private fun FieldPreview(label: String, value: String, error: Boolean) {
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
-        }
-    }
-}
-
-@Composable
-private fun RuleCard(pattern: FeedbackPattern) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = Ink
-    ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Decision rule", color = Color.White, fontWeight = FontWeight.Black)
-            Text(pattern.rule, color = Color(0xFFDDE4DE), lineHeight = 20.sp)
         }
     }
 }
