@@ -13,7 +13,7 @@ import com.kevin.permissiononboardinglab.App as PermissionOnboardingLab
 import com.kevin.searchstatemachine.App as SearchStateMachine
 import com.kevin.swipeactionlab.App as SwipeActionLab
 
-/** One entry of the catalog: a self-contained lab screen. */
+/** One entry of the catalog: a self-contained lab screen. [accent] is the dot shown on the home screen. */
 class Lab(
     val id: String,
     val title: String,
@@ -35,42 +35,42 @@ val labs: List<Lab> = listOf(
         id = "bottom-sheet-playbook",
         title = "Bottom Sheet Playbook",
         summary = "Pick the right sheet for confirm, filters, peek, forms and actions.",
-        accent = Color(0xFF0F6B55),
+        accent = Color(0xFFB5532A),
         content = { BottomSheetPlaybook() }
     ),
     Lab(
         id = "empty-state-gallery",
         title = "Empty State Gallery",
         summary = "First use, no results, offline, permission, error: what to say and do.",
-        accent = Color(0xFF1B5E4A),
+        accent = Color(0xFF6750A4),
         content = { EmptyStateGallery() }
     ),
     Lab(
         id = "feedback-surface-lab",
         title = "Feedback Surface Lab",
         summary = "Snackbar, undo, inline error, banner or blocking dialog: where feedback lives.",
-        accent = Color(0xFF0F6B55),
+        accent = Color(0xFFB86812),
         content = { FeedbackSurfaceLab() }
     ),
     Lab(
         id = "loading-ux-patterns",
         title = "Loading UX Patterns",
         summary = "Inline spinner, skeleton, steps, optimistic UI: progress after an action.",
-        accent = Color(0xFF0E6251),
+        accent = Color(0xFF2F5DA8),
         content = { LoadingUxPatterns() }
     ),
     Lab(
         id = "navigation-backstack-lab",
         title = "Navigation Backstack Lab",
         summary = "A real back stack: tabs, nested routes, modal layer, deep links and Back.",
-        accent = Color(0xFF2864A8),
+        accent = Color(0xFF6B57B8),
         content = { NavigationBackstackLab() }
     ),
     Lab(
         id = "offline-first-notes",
         title = "Offline First Notes",
         summary = "Local-first writing, sync queue, background progress and conflicts.",
-        accent = Color(0xFF0D6B57),
+        accent = Color(0xFFB76F16),
         content = { OfflineFirstNotes() }
     ),
     Lab(
@@ -91,7 +91,7 @@ val labs: List<Lab> = listOf(
         id = "swipe-action-lab",
         title = "Swipe Action Lab",
         summary = "Swipe actions that scroll, resolve and undo, without accidental triggers.",
-        accent = Color(0xFF0D735B),
+        accent = Color(0xFFD33F49),
         content = { SwipeActionLab() }
     ),
 )
