@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.kevin.adaptivelayoutlab.App as AdaptiveLayoutLab
 import com.kevin.bottomsheetplaybook.App as BottomSheetPlaybook
+import com.kevin.emptystategallery.App as EmptyStateGallery
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -29,5 +30,12 @@ val labs: List<Lab> = listOf(
         summary = "Pick the right sheet for confirm, filters, peek, forms and actions.",
         accent = Color(0xFF0F6B55),
         content = { BottomSheetPlaybook() }
+    ),
+    Lab(
+        id = "empty-state-gallery",
+        title = "Empty State Gallery",
+        summary = "First use, no results, offline, permission, error: what to say and do.",
+        accent = Color(0xFF1B5E4A),
+        content = { EmptyStateGallery() }
     ),
 )
