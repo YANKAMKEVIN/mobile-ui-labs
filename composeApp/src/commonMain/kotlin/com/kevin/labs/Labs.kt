@@ -6,6 +6,7 @@ import com.kevin.adaptivelayoutlab.App as AdaptiveLayoutLab
 import com.kevin.bottomsheetplaybook.App as BottomSheetPlaybook
 import com.kevin.emptystategallery.App as EmptyStateGallery
 import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
+import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -45,5 +46,12 @@ val labs: List<Lab> = listOf(
         summary = "Snackbar, undo, inline error, banner or blocking dialog: where feedback lives.",
         accent = Color(0xFF0F6B55),
         content = { FeedbackSurfaceLab() }
+    ),
+    Lab(
+        id = "loading-ux-patterns",
+        title = "Loading UX Patterns",
+        summary = "Inline spinner, skeleton, steps, optimistic UI: progress after an action.",
+        accent = Color(0xFF0E6251),
+        content = { LoadingUxPatterns() }
     ),
 )
