@@ -7,7 +7,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +20,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -61,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
@@ -196,7 +191,10 @@ private fun SearchStateMachine() {
             )
         }
         item {
-            StateTabs(
+            LabTabs(
+                items = states,
+                label = { it.tab },
+                accent = { it.accent },
                 selectedIndex = states.indexOf(selected),
                 onSelected = { index ->
                     val demo = states[index]
@@ -208,7 +206,8 @@ private fun SearchStateMachine() {
                         }
                     )
                 },
-                modifier = Modifier.padding(start = 20.dp)
+                modifier = Modifier.padding(start = 20.dp),
+                compact = true
             )
         }
         item {
@@ -226,45 +225,6 @@ private fun SearchStateMachine() {
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
-    }
-}
-
-@Composable
-private fun StateTabs(
-    selectedIndex: Int,
-    onSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        states.forEachIndexed { index, state ->
-            val selected = selectedIndex == index
-            Surface(
-                modifier = Modifier
-                    .heightIn(min = 48.dp)
-                    .selectable(selected = selected, role = Role.Tab, onClick = { onSelected(index) }),
-                shape = RoundedCornerShape(50),
-                color = if (selected) state.accent else Color.White,
-                border = BorderStroke(1.dp, if (selected) state.accent else Line)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .padding(horizontal = 12.dp, vertical = 9.dp),
-                    text = state.tab,
-                    color = if (selected) Color.White else Ink,
-                    fontWeight = FontWeight.Black,
-                    fontSize = 15.sp,
-                    lineHeight = 18.sp
-                )
-            }
-        }
-        Spacer(modifier = Modifier.width(10.dp))
     }
 }
 
