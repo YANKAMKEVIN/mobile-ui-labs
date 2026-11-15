@@ -10,6 +10,7 @@ import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
 import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
 import com.kevin.offlinefirstnotes.App as OfflineFirstNotes
 import com.kevin.permissiononboardinglab.App as PermissionOnboardingLab
+import com.kevin.searchstatemachine.App as SearchStateMachine
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -77,5 +78,12 @@ val labs: List<Lab> = listOf(
         summary = "Ask with context, handle denial, limited access and the Settings detour.",
         accent = Color(0xFF0E7059),
         content = { PermissionOnboardingLab() }
+    ),
+    Lab(
+        id = "search-state-machine",
+        title = "Search State Machine",
+        summary = "A tested reducer: debounce, loading, results, empty, error and retry.",
+        accent = Color(0xFF245FA8),
+        content = { SearchStateMachine() }
     ),
 )
