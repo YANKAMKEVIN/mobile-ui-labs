@@ -8,6 +8,7 @@ import com.kevin.emptystategallery.App as EmptyStateGallery
 import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
 import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
 import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
+import com.kevin.offlinefirstnotes.App as OfflineFirstNotes
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -61,5 +62,12 @@ val labs: List<Lab> = listOf(
         summary = "A real back stack: tabs, nested routes, modal layer, deep links and Back.",
         accent = Color(0xFF2864A8),
         content = { NavigationBackstackLab() }
+    ),
+    Lab(
+        id = "offline-first-notes",
+        title = "Offline First Notes",
+        summary = "Local-first writing, sync queue, background progress and conflicts.",
+        accent = Color(0xFF0D6B57),
+        content = { OfflineFirstNotes() }
     ),
 )
