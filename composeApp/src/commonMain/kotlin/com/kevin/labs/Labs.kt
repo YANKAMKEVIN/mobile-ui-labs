@@ -11,6 +11,7 @@ import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
 import com.kevin.offlinefirstnotes.App as OfflineFirstNotes
 import com.kevin.permissiononboardinglab.App as PermissionOnboardingLab
 import com.kevin.searchstatemachine.App as SearchStateMachine
+import com.kevin.swipeactionlab.App as SwipeActionLab
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -85,5 +86,12 @@ val labs: List<Lab> = listOf(
         summary = "A tested reducer: debounce, loading, results, empty, error and retry.",
         accent = Color(0xFF245FA8),
         content = { SearchStateMachine() }
+    ),
+    Lab(
+        id = "swipe-action-lab",
+        title = "Swipe Action Lab",
+        summary = "Swipe actions that scroll, resolve and undo, without accidental triggers.",
+        accent = Color(0xFF0D735B),
+        content = { SwipeActionLab() }
     ),
 )
