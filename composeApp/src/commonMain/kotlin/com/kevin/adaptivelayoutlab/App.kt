@@ -34,14 +34,11 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,23 +49,17 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Green,
-            secondary = Blue,
-            background = Paper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Paper
-        ) {
-            AdaptiveLayoutLab()
-        }
+    LabTheme(primary = Green, secondary = Blue) {
+        AdaptiveLayoutLab()
     }
 }
 
@@ -89,10 +80,6 @@ private data class LayoutCopy(
     val accent: Color
 )
 
-private val Paper = Color(0xFFF5F0E8)
-private val Ink = Color(0xFF111713)
-private val Muted = Color(0xFF667068)
-private val Line = Color(0xFFE0D6C8)
 private val Green = Color(0xFF0E6A59)
 private val Blue = Color(0xFF2864A8)
 private val Coral = Color(0xFFC0523A)
@@ -155,7 +142,13 @@ private fun AdaptiveLayoutLab() {
             .padding(top = 14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { Header(Modifier.padding(horizontal = 20.dp)) }
+        item {
+            LabHeader(
+                title = "Adaptive Layout Lab",
+                subtitle = "A Compose playground for changing hierarchy across compact, wide and foldable surfaces.",
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         item {
             ModeTabs(
                 selectedIndex = selectedIndex,
@@ -182,27 +175,6 @@ private fun AdaptiveLayoutLab() {
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
-    }
-}
-
-@Composable
-private fun Header(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(
-            text = "Adaptive Layout Lab",
-            color = Ink,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A Compose playground for changing hierarchy across compact, wide and foldable surfaces.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 

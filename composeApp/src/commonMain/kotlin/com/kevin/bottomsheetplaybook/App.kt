@@ -45,7 +45,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,24 +62,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import kotlinx.coroutines.launch
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = InkGreen,
-            secondary = Clay,
-            background = WarmPaper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            BottomSheetPlaybook()
-        }
+    LabTheme(primary = InkGreen, secondary = Clay) {
+        BottomSheetPlaybook()
     }
 }
 
@@ -100,10 +93,6 @@ private data class SheetPattern(
     val accent: Color
 )
 
-private val WarmPaper = Color(0xFFF6F1E8)
-private val AlmostBlack = Color(0xFF121713)
-private val Muted = Color(0xFF66706A)
-private val Hairline = Color(0xFFE1DAD0)
 private val InkGreen = Color(0xFF0F6B55)
 private val Blue = Color(0xFF2364AA)
 private val Violet = Color(0xFF6C4AB6)
@@ -168,7 +157,12 @@ private fun BottomSheetPlaybook() {
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { Header() }
+            item {
+                LabHeader(
+                    title = "Bottom Sheet Playbook",
+                    subtitle = "A compact UI lab for choosing the right sheet pattern without turning every task into a hidden page."
+                )
+            }
             item {
                 PatternTabs(
                     selectedIndex = selectedIndex,
@@ -215,24 +209,6 @@ private fun BottomSheetPlaybook() {
 }
 
 @Composable
-private fun Header() {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "Bottom Sheet Playbook",
-            color = AlmostBlack,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A compact UI lab for choosing the right sheet pattern without turning every task into a hidden page.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
-
-@Composable
 private fun PatternTabs(selectedIndex: Int, onSelected: (Int) -> Unit) {
     Row(
         modifier = Modifier
@@ -249,14 +225,14 @@ private fun PatternTabs(selectedIndex: Int, onSelected: (Int) -> Unit) {
                     .selectable(selected = selected, role = Role.Tab, onClick = { onSelected(index) }),
                 color = if (selected) pattern.accent else Color.White,
                 shape = RoundedCornerShape(50),
-                border = BorderStroke(1.dp, if (selected) pattern.accent else Hairline)
+                border = BorderStroke(1.dp, if (selected) pattern.accent else Line)
             ) {
                 Text(
                     modifier = Modifier
                         .wrapContentHeight()
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     text = pattern.title,
-                    color = if (selected) Color.White else AlmostBlack,
+                    color = if (selected) Color.White else Ink,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -280,7 +256,7 @@ private fun SheetPreview(pattern: SheetPattern, onOpen: () -> Unit) {
             SheetAnatomy(pattern)
             Text(
                 text = pattern.context,
-                color = AlmostBlack,
+                color = Ink,
                 fontWeight = FontWeight.Black,
                 fontSize = 25.sp,
                 lineHeight = 30.sp,
@@ -330,7 +306,7 @@ private fun SheetAnatomy(pattern: SheetPattern) {
                 modifier = Modifier
                     .size(width = 46.dp, height = 5.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(Hairline)
+                    .background(Line)
             )
             repeat(if (pattern.kind == SheetKind.Peek) 2 else 3) { index ->
                 Box(
@@ -358,7 +334,7 @@ private fun SheetContent(pattern: SheetPattern, onClose: () -> Unit) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = pattern.title,
-                color = AlmostBlack,
+                color = Ink,
                 fontWeight = FontWeight.Black,
                 style = MaterialTheme.typography.headlineSmall
             )
@@ -433,13 +409,13 @@ private fun FormSheet(pattern: SheetPattern, onClose: () -> Unit) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = WarmPaper,
-            border = BorderStroke(1.dp, Hairline)
+            color = Paper,
+            border = BorderStroke(1.dp, Line)
         ) {
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = "Test dismiss behavior on drag and outside tap",
-                color = AlmostBlack
+                color = Ink
             )
         }
         Text("Priority", color = Muted, fontWeight = FontWeight.Bold)
@@ -471,13 +447,13 @@ private fun ActionsSheet(pattern: SheetPattern, onClose: () -> Unit) {
 private fun ChoicePill(label: String, selected: Boolean, accent: Color) {
     Surface(
         shape = RoundedCornerShape(50),
-        color = if (selected) accent else WarmPaper,
-        border = BorderStroke(1.dp, if (selected) accent else Hairline)
+        color = if (selected) accent else Paper,
+        border = BorderStroke(1.dp, if (selected) accent else Line)
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
             text = label,
-            color = if (selected) Color.White else AlmostBlack,
+            color = if (selected) Color.White else Ink,
             fontWeight = FontWeight.Bold
         )
     }
@@ -492,7 +468,7 @@ private fun RowScope.StatCard(label: String, value: String, accent: Color) {
     ) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(label, color = Muted, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            Text(value, color = AlmostBlack, fontWeight = FontWeight.Black)
+            Text(value, color = Ink, fontWeight = FontWeight.Black)
         }
     }
 }
@@ -502,8 +478,8 @@ private fun ActionRow(label: String, accent: Color, destructive: Boolean) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = if (destructive) Danger.copy(alpha = 0.08f) else WarmPaper,
-        border = BorderStroke(1.dp, if (destructive) Danger.copy(alpha = 0.24f) else Hairline)
+        color = if (destructive) Danger.copy(alpha = 0.08f) else Paper,
+        border = BorderStroke(1.dp, if (destructive) Danger.copy(alpha = 0.24f) else Line)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 13.dp),
@@ -526,7 +502,7 @@ private fun ActionRow(label: String, accent: Color, destructive: Boolean) {
             }
             Text(
                 text = label,
-                color = if (destructive) Danger else AlmostBlack,
+                color = if (destructive) Danger else Ink,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -538,7 +514,7 @@ private fun DecisionRule(pattern: SheetPattern) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
-        color = AlmostBlack
+        color = Ink
     ) {
         Column(
             modifier = Modifier.padding(18.dp),

@@ -34,10 +34,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,34 +43,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.SystemBackHandler
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Blue,
-            secondary = Green,
-            background = Paper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Paper
-        ) {
-            NavigationBackstackLab()
-        }
+    LabTheme(primary = Blue, secondary = Green) {
+        NavigationBackstackLab()
     }
 }
 
@@ -95,10 +87,6 @@ private data class NavCopy(
     val preset: NavState
 )
 
-private val Paper = Color(0xFFF5F0E8)
-private val Ink = Color(0xFF101615)
-private val Muted = Color(0xFF687169)
-private val Line = Color(0xFFE1D8CA)
 private val Blue = Color(0xFF2864A8)
 private val Green = Color(0xFF0B6B57)
 private val Coral = Color(0xFFC8523A)
@@ -172,7 +160,13 @@ private fun NavigationBackstackLab() {
             .padding(top = 14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { Header(Modifier.padding(horizontal = 20.dp)) }
+        item {
+            LabHeader(
+                title = "Navigation Backstack Lab",
+                subtitle = "A Compose/KMP lab for visualizing routes, nested flows, modal layers, deep links and Android Back.",
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         item {
             ScenarioTabs(
                 selectedIndex = selectedIndex,
@@ -198,27 +192,6 @@ private fun NavigationBackstackLab() {
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
-    }
-}
-
-@Composable
-private fun Header(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(
-            text = "Navigation Backstack Lab",
-            color = Ink,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A Compose/KMP lab for visualizing routes, nested flows, modal layers, deep links and Android Back.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 

@@ -37,7 +37,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -47,7 +46,6 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,24 +62,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import kotlinx.coroutines.launch
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Pine,
-            secondary = Amber,
-            background = Paper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Paper
-        ) {
-            FeedbackSurfaceLab()
-        }
+    LabTheme(primary = Pine, secondary = Amber) {
+        FeedbackSurfaceLab()
     }
 }
 
@@ -101,10 +93,6 @@ private data class FeedbackPattern(
     val accent: Color
 )
 
-private val Paper = Color(0xFFF7F2EA)
-private val Ink = Color(0xFF111713)
-private val Muted = Color(0xFF66716B)
-private val Line = Color(0xFFE2DBD1)
 private val Pine = Color(0xFF0F6B55)
 private val Blue = Color(0xFF255EA8)
 private val Amber = Color(0xFFB86812)
@@ -191,7 +179,12 @@ private fun FeedbackSurfaceLab() {
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { Header() }
+            item {
+                LabHeader(
+                    title = "Feedback Surface Lab",
+                    subtitle = "A product-minded Compose lab for choosing where feedback should live after an interaction."
+                )
+            }
             item {
                 FeedbackTabs(
                     selectedIndex = selectedIndex,
@@ -241,24 +234,6 @@ private fun FeedbackSurfaceLab() {
                 Text(text = data.visuals.message, fontWeight = FontWeight.Bold)
             }
         }
-    }
-}
-
-@Composable
-private fun Header() {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "Feedback Surface Lab",
-            color = Ink,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A product-minded Compose lab for choosing where feedback should live after an interaction.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 

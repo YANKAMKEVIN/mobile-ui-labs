@@ -34,14 +34,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,23 +49,17 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Green,
-            secondary = Blue,
-            background = Paper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Paper
-        ) {
-            OfflineFirstNotes()
-        }
+    LabTheme(primary = Green, secondary = Blue) {
+        OfflineFirstNotes()
     }
 }
 
@@ -89,10 +80,6 @@ private data class SyncCopy(
     val accent: Color
 )
 
-private val Paper = Color(0xFFF4F0E8)
-private val Ink = Color(0xFF101615)
-private val Muted = Color(0xFF697169)
-private val Line = Color(0xFFE1D8CA)
 private val Green = Color(0xFF0D6B57)
 private val Blue = Color(0xFF2563A8)
 private val Gold = Color(0xFFB76F16)
@@ -155,7 +142,13 @@ private fun OfflineFirstNotes() {
             .padding(top = 14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { Header(Modifier.padding(horizontal = 20.dp)) }
+        item {
+            LabHeader(
+                title = "Offline First Notes",
+                subtitle = "A Compose lab for local-first writing, sync queues, background progress and conflict recovery.",
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         item {
             ModeTabs(
                 selectedIndex = selectedIndex,
@@ -182,27 +175,6 @@ private fun OfflineFirstNotes() {
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
-    }
-}
-
-@Composable
-private fun Header(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(
-            text = "Offline First Notes",
-            color = Ink,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A Compose lab for local-first writing, sync queues, background progress and conflict recovery.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 

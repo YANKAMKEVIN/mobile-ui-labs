@@ -45,7 +45,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,24 +62,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Color(0xFF0E6251),
-            secondary = Color(0xFFB26A00),
-            background = Color(0xFFF7F3EA),
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            LoadingGallery()
-        }
+    LabTheme(primary = Color(0xFF0E6251), secondary = Color(0xFFB26A00)) {
+        LoadingGallery()
     }
 }
 
@@ -167,7 +156,12 @@ private fun LoadingGallery() {
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        item { Header() }
+        item {
+            LabHeader(
+                title = "Loading UX Patterns",
+                subtitle = "Five ways to show progress after an interaction, from tiny actions to longer flows."
+            )
+        }
         item {
             PatternPicker(
                 selectedIndex = selectedIndex,
@@ -196,24 +190,6 @@ private fun LoadingGallery() {
             }
         }
         item { DecisionCard(pattern = selected) }
-    }
-}
-
-@Composable
-private fun Header() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = "Loading UX Patterns",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Black,
-            color = Color(0xFF151A17)
-        )
-        Text(
-            text = "Five ways to show progress after an interaction, from tiny actions to longer flows.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF65706A),
-            lineHeight = 25.sp
-        )
     }
 }
 

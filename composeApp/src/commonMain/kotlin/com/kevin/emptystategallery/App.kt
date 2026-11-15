@@ -38,17 +38,16 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,25 +66,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Color(0xFF1B5E4A),
-            secondary = Color(0xFF6750A4),
-            surface = Color(0xFFFFFBFE),
-            background = Color(0xFFF6F2EA),
-            error = Color(0xFFB3261E)
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            EmptyStateGallery()
-        }
+    LabTheme(primary = Color(0xFF1B5E4A), secondary = Color(0xFF6750A4)) {
+        EmptyStateGallery()
     }
 }
 
@@ -203,7 +191,10 @@ private fun EmptyStateGallery() {
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         item {
-            Header()
+            LabHeader(
+                title = "Empty State Gallery",
+                subtitle = "Five tiny UI patterns for moments where the screen has no content."
+            )
         }
         item {
             PatternPicker(
@@ -223,23 +214,6 @@ private fun EmptyStateGallery() {
         item {
             UxNotes(pattern = selected)
         }
-    }
-}
-
-@Composable
-private fun Header() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = "Empty State Gallery",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Black,
-            color = Color(0xFF171B18)
-        )
-        Text(
-            text = "Five tiny UI patterns for moments where the screen has no content.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFF5D665F)
-        )
     }
 }
 

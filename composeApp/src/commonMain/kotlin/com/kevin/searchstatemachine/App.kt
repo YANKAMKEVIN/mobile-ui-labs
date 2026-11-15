@@ -8,9 +8,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,12 +17,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -33,16 +30,17 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,29 +54,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabHeader
+import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import kotlinx.coroutines.delay
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Blue,
-            secondary = Green,
-            background = Paper,
-            surface = Color.White
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Paper
-        ) {
-            SearchStateMachine()
-        }
+    LabTheme(primary = Blue, secondary = Green) {
+        SearchStateMachine()
     }
 }
 
@@ -93,10 +85,6 @@ private data class SearchCopy(
     val accent: Color
 )
 
-private val Paper = Color(0xFFF6F1E8)
-private val Ink = Color(0xFF101615)
-private val Muted = Color(0xFF66706A)
-private val Line = Color(0xFFE0D7CA)
 private val Blue = Color(0xFF245FA8)
 private val Green = Color(0xFF0B6B57)
 private val Coral = Color(0xFFC8523A)
@@ -200,7 +188,13 @@ private fun SearchStateMachine() {
             .padding(top = 14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { Header(Modifier.padding(horizontal = 20.dp)) }
+        item {
+            LabHeader(
+                title = "Search State Machine",
+                subtitle = "A Compose lab for designing search as a flow: intent, feedback, result quality and recovery.",
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
         item {
             StateTabs(
                 selectedIndex = states.indexOf(selected),
@@ -232,27 +226,6 @@ private fun SearchStateMachine() {
             )
         }
         item { Spacer(modifier = Modifier.height(2.dp)) }
-    }
-}
-
-@Composable
-private fun Header(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(
-            text = "Search State Machine",
-            color = Ink,
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Text(
-            text = "A Compose lab for designing search as a flow: intent, feedback, result quality and recovery.",
-            color = Muted,
-            lineHeight = 23.sp,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 
