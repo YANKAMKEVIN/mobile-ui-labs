@@ -9,6 +9,7 @@ import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
 import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
 import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
 import com.kevin.offlinefirstnotes.App as OfflineFirstNotes
+import com.kevin.permissiononboardinglab.App as PermissionOnboardingLab
 
 /** One entry of the catalog: a self-contained lab screen. */
 class Lab(
@@ -69,5 +70,12 @@ val labs: List<Lab> = listOf(
         summary = "Local-first writing, sync queue, background progress and conflicts.",
         accent = Color(0xFF0D6B57),
         content = { OfflineFirstNotes() }
+    ),
+    Lab(
+        id = "permission-onboarding-lab",
+        title = "Permission Onboarding Lab",
+        summary = "Ask with context, handle denial, limited access and the Settings detour.",
+        accent = Color(0xFF0E7059),
+        content = { PermissionOnboardingLab() }
     ),
 )
