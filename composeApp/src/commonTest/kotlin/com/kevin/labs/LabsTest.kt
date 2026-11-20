@@ -37,4 +37,17 @@ class LabsTest {
         assertEquals(2, catalogColumns(839f))
         assertEquals(3, catalogColumns(1280f))
     }
+
+    @Test
+    fun groupsAreContiguousSoNumbersReadInOrder() {
+        assertEquals(labs, labsByGroup().flatMap { it.second })
+        assertTrue(labsByGroup().all { it.second.isNotEmpty() })
+    }
+
+    @Test
+    fun labsAreNumberedFromOneToTen() {
+        assertEquals("01", labs.first().number())
+        assertEquals("10", labs.last().number())
+        assertEquals((1..labs.size).map { it.toString().padStart(2, '0') }, labs.map { it.number() })
+    }
 }

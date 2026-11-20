@@ -142,7 +142,10 @@ fun Catalog(onOpen: (Lab) -> Unit) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
-            items(labs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
+            labsByGroup().forEach { (group, groupLabs) ->
+                item(key = group.name, span = { GridItemSpan(maxLineSpan) }) { GroupTitle(group) }
+                items(groupLabs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
+            }
         }
     }
 }
@@ -155,6 +158,20 @@ internal fun catalogColumns(widthDp: Float): Int = when {
     widthDp < 600f -> 1
     widthDp < 840f -> 2
     else -> 3
+}
+
+@Composable
+private fun GroupTitle(group: LabGroup) {
+    Text(
+        text = group.title.uppercase(),
+        modifier = Modifier
+            .padding(top = 12.dp, bottom = 2.dp)
+            .semantics { heading() },
+        color = Muted,
+        fontWeight = FontWeight.Black,
+        fontSize = 13.sp,
+        letterSpacing = 1.sp
+    )
 }
 
 @Composable
@@ -173,6 +190,13 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
         ) {
             LabVignette(lab.vignette, lab.accent)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = lab.number(),
+                    color = lab.accent,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 12.sp,
+                    letterSpacing = 0.8.sp
+                )
                 Text(lab.title, color = Ink, fontWeight = FontWeight.Black, fontSize = 17.sp)
                 Text(lab.summary, color = Muted, lineHeight = 20.sp, fontSize = 14.sp)
             }
