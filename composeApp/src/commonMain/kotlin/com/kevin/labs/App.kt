@@ -29,24 +29,30 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,6 +73,7 @@ import com.kevin.labs.ui.LocalLabHosted
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.PredictiveBackHandler
+import kotlinx.coroutines.flow.first
 
 /** The whole app; [darkTheme] follows the system setting unless forced. */
 @Composable
@@ -76,6 +83,17 @@ fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
         var openId by rememberSaveable { mutableStateOf<String?>(null) }
         // 0..1 while an Android predictive back gesture pulls the open lab away.
         var backProgress by remember { mutableFloatStateOf(0f) }
+        // Kept here, above the catalog, so the list is back where it was when a lab closes.
+        val catalogState = rememberLazyGridState()
+        // Labs opened during this session (and the last one), marked on the catalog.
+        var visited by rememberSaveable(stateSaver = VisitedSaver) { mutableStateOf(emptySet<String>()) }
+        var lastOpened by rememberSaveable { mutableStateOf<String?>(null) }
+        val openLab: (Lab) -> Unit = {
+            backProgress = 0f
+            openId = it.id
+            visited = visited + it.id
+            lastOpened = it.id
+        }
         AnimatedContent(
             targetState = openId,
             transitionSpec = {
@@ -92,18 +110,12 @@ fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
         ) { id ->
             val open = labs.firstOrNull { it.id == id }
             if (open == null) {
-                Catalog(onOpen = {
-                    backProgress = 0f
-                    openId = it.id
-                })
+                Catalog(onOpen = openLab, state = catalogState, visited = visited, lastOpened = lastOpened)
             } else {
                 LabScreen(
                     lab = open,
                     onBack = { openId = null },
-                    onOpenLab = {
-                        backProgress = 0f
-                        openId = it.id
-                    },
+                    onOpenLab = openLab,
                     backProgress = backProgress,
                     onBackProgress = { backProgress = it }
                 )
@@ -116,7 +128,20 @@ fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
 internal fun labOrder(id: String?): Int = labs.indexOfFirst { it.id == id }
 
 @Composable
-fun Catalog(onOpen: (Lab) -> Unit) {
+fun Catalog(
+    onOpen: (Lab) -> Unit,
+    state: LazyGridState = rememberLazyGridState(),
+    visited: Set<String> = emptySet(),
+    lastOpened: String? = null
+) {
+    // Coming back from a lab reached through the previous / next links: bring it into view.
+    LaunchedEffect(lastOpened) {
+        val id = lastOpened ?: return@LaunchedEffect
+        snapshotFlow { state.layoutInfo.totalItemsCount }.first { it > 0 } // wait for the first layout
+        if (state.layoutInfo.visibleItemsInfo.none { it.key == id }) {
+            state.scrollToItem(catalogItemIndex(id))
+        }
+    }
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -128,6 +153,7 @@ fun Catalog(onOpen: (Lab) -> Unit) {
         val columns = catalogColumns(maxWidth.value)
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
+            state = state,
             modifier = Modifier
                 .fillMaxHeight()
                 .widthIn(max = MAX_CATALOG_WIDTH.dp),
@@ -144,10 +170,27 @@ fun Catalog(onOpen: (Lab) -> Unit) {
             }
             labsByGroup().forEach { (group, groupLabs) ->
                 item(key = group.name, span = { GridItemSpan(maxLineSpan) }) { GroupTitle(group) }
-                items(groupLabs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
+                items(groupLabs, key = { it.id }) { lab ->
+                    LabRow(lab, visited = lab.id in visited, onClick = { onOpen(lab) })
+                }
             }
         }
     }
+}
+
+/** Saves the visited lab ids as a list, which every platform can put in saved state. */
+private val VisitedSaver = listSaver<Set<String>, String>(save = { it.toList() }, restore = { it.toSet() })
+
+/** Index of a lab's card in the catalog grid: after the header and the group titles before it. */
+internal fun catalogItemIndex(id: String): Int {
+    var index = 1 // the header
+    for ((_, groupLabs) in labsByGroup()) {
+        index++ // the group title
+        val position = groupLabs.indexOfFirst { it.id == id }
+        if (position >= 0) return index + position
+        index += groupLabs.size
+    }
+    return 0
 }
 
 /** Widest the catalog grows; beyond, it stays centred with paper on both sides. */
@@ -175,7 +218,7 @@ private fun GroupTitle(group: LabGroup) {
 }
 
 @Composable
-private fun LabRow(lab: Lab, onClick: () -> Unit) {
+private fun LabRow(lab: Lab, visited: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -199,6 +242,14 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
                 )
                 Text(lab.title, color = Ink, fontWeight = FontWeight.Black, fontSize = 17.sp)
                 Text(lab.summary, color = Muted, lineHeight = 20.sp, fontSize = 14.sp)
+            }
+            if (visited) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = "Opened",
+                    tint = lab.accent,
+                    modifier = Modifier.size(18.dp)
+                )
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

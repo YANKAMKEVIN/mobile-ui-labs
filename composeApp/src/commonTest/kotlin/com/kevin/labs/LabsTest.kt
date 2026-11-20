@@ -50,4 +50,15 @@ class LabsTest {
         assertEquals("10", labs.last().number())
         assertEquals((1..labs.size).map { it.toString().padStart(2, '0') }, labs.map { it.number() })
     }
+
+    @Test
+    fun catalogIndexSkipsHeaderAndGroupTitles() {
+        // Header, then "Structure & navigation" title, then the first lab.
+        assertEquals(2, catalogItemIndex(labs.first().id))
+        // Every lab: its position + the header + one title per group up to and including its own.
+        labs.forEachIndexed { position, lab ->
+            val titles = LabGroup.entries.indexOf(lab.group) + 1
+            assertEquals(position + 1 + titles, catalogItemIndex(lab.id))
+        }
+    }
 }
