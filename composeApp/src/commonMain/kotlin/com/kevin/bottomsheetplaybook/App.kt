@@ -189,7 +189,7 @@ private fun BottomSheetPlaybook() {
                     SheetPreview(pattern = pattern, onOpen = { openPattern = pattern })
                 }
             }
-            item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { RuleCard(rule = selected.rule, accent = selected.accent) }
             item { LabFooter() }
         }
 

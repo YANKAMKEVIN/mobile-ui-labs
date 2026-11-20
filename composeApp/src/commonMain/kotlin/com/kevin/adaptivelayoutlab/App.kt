@@ -199,7 +199,6 @@ private fun AdaptiveLayoutLab() {
         }
         item {
             RuleCard(
-                title = "Design rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent

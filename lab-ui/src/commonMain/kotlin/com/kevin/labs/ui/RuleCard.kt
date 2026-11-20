@@ -31,17 +31,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * The dark card that closes every lab with its design rule. Inside the app shell it also links to
- * the code of the lab ([LocalLabSource]).
+ * The card that closes every lab with its rule, always titled the same way so the "rule to
+ * remember" reads at a glance from one lab to the next. Inside the app shell it also links to the
+ * code of the lab ([LocalLabSource]).
  *
- * @param accent when set, a check badge in this colour precedes the title.
+ * @param accent colour of the pattern on screen, filling the check badge before the title.
+ * @param note optional second line, for a "when to use it" hint after the rule.
  */
 @Composable
 fun RuleCard(
-    title: String,
     rule: String,
+    accent: Color,
     modifier: Modifier = Modifier,
-    accent: Color? = null
+    note: String? = null
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -56,29 +58,31 @@ fun RuleCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(9.dp)
             ) {
-                if (accent != null) {
-                    Box(
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(CircleShape)
-                            .background(accent),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(accent),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
-                Text(text = title, color = OnInverse, fontWeight = FontWeight.Black)
+                Text(text = RULE_TITLE, color = OnInverse, fontWeight = FontWeight.Black)
             }
             Text(text = rule, color = OnInverseMuted, lineHeight = 22.sp)
+            note?.let { Text(text = it, color = OnInverse, fontWeight = FontWeight.SemiBold, lineHeight = 22.sp) }
             LocalLabSource.current?.let { ViewCode(it) }
         }
     }
 }
+
+/** The one title of every rule card. */
+const val RULE_TITLE = "Decision rule"
 
 @Composable
 private fun ViewCode(source: LabSource) {

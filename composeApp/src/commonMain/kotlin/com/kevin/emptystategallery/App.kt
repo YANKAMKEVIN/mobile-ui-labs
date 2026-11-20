@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
@@ -67,6 +66,7 @@ import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
@@ -220,7 +220,7 @@ private fun EmptyStateGallery() {
             }
         }
         item {
-            UxNotes(pattern = selected)
+            RuleCard(rule = selected.designTip, accent = selected.accent, note = selected.uxNote)
         }
         item { LabFooter() }
     }
@@ -415,45 +415,6 @@ private fun EmptyIllustration(pattern: EmptyStatePattern, loading: Boolean) {
                     imageVector = pattern.icon,
                     contentDescription = null,
                     tint = pattern.accent
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun UxNotes(pattern: EmptyStatePattern) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF171B18)),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(
-                imageVector = Icons.Filled.MailOutline,
-                contentDescription = null,
-                tint = Color(0xFFB7F2D1)
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "UX note",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = pattern.designTip,
-                    color = Color(0xFFD6DDD8),
-                    lineHeight = 20.sp
-                )
-                Text(
-                    text = pattern.uxNote,
-                    color = Color(0xFFB7F2D1),
-                    lineHeight = 20.sp
                 )
             }
         }

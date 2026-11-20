@@ -194,7 +194,6 @@ private fun NavigationBackstackLab() {
         }
         item {
             RuleCard(
-                title = "Navigation rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent

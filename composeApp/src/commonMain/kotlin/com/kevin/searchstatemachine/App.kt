@@ -228,7 +228,6 @@ private fun SearchStateMachine() {
         }
         item {
             RuleCard(
-                title = "State rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent

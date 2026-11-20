@@ -187,7 +187,7 @@ private fun PermissionOnboardingLab() {
                 PermissionPreview(steps.first { it.step == shown.step }, shown, onAction)
             }
         }
-        item { RuleCard(title = "Decision rule", rule = selected.rule) }
+        item { RuleCard(rule = selected.rule, accent = selected.accent) }
         item { LabFooter() }
     }
 }

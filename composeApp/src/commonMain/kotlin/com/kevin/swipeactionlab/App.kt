@@ -227,7 +227,7 @@ private fun SwipeActionLab() {
                     )
                 }
             }
-            item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { RuleCard(rule = selected.rule, accent = selected.accent) }
             item { LabFooter() }
             item { Spacer(Modifier.height(74.dp)) }
         }

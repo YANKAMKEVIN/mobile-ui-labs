@@ -173,7 +173,6 @@ private fun OfflineFirstNotes() {
         }
         item {
             RuleCard(
-                title = "Sync rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent

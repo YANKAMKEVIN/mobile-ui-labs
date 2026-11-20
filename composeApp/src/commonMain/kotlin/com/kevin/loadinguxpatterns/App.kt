@@ -201,7 +201,6 @@ private fun LoadingGallery() {
         }
         item {
             RuleCard(
-                title = "Decision rule",
                 rule = selected.note,
                 accent = selected.accent
             )
