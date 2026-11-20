@@ -54,11 +54,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "How should progress show after an action? Compare in-button, overlay, skeleton, optimistic and step by step."
 
 @Composable
 fun App() {
@@ -141,6 +151,13 @@ private fun LoadingGallery() {
         completed = false
     }
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        runId = 0
+        isLoading = false
+        completed = false
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -153,7 +170,7 @@ private fun LoadingGallery() {
         item {
             LabHeader(
                 title = "Loading UX Patterns",
-                subtitle = "Five ways to show progress after an interaction, from tiny actions to longer flows."
+                subtitle = PITCH
             )
         }
         item {
@@ -162,17 +179,13 @@ private fun LoadingGallery() {
                 label = { it.title },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = {
-                    selectedIndex = it
-                    runId = 0
-                    isLoading = false
-                    completed = false
-                }
+                onSelected = selectPattern
             )
         }
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, patterns.size, selectPattern),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "loading-pattern"
             ) { pattern ->
@@ -188,11 +201,11 @@ private fun LoadingGallery() {
         }
         item {
             RuleCard(
-                title = "Decision rule",
                 rule = selected.note,
                 accent = selected.accent
             )
         }
+        item { LabFooter() }
     }
 }
 
@@ -206,7 +219,7 @@ private fun LoadingPreview(
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Box {
@@ -252,7 +265,7 @@ private fun LoadingPreview(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White.copy(alpha = 0.88f)),
+                        .background(CardColor.copy(alpha = 0.88f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -281,7 +294,7 @@ private fun PatternIllustration(
             .clip(RoundedCornerShape(26.dp))
             .background(
                 Brush.linearGradient(
-                    listOf(pattern.accent.copy(alpha = 0.18f), Color(0xFFFAF7F0))
+                    listOf(pattern.accent.copy(alpha = 0.18f), Paper)
                 )
             )
             .border(1.dp, pattern.accent.copy(alpha = 0.22f), RoundedCornerShape(26.dp)),
@@ -340,7 +353,7 @@ private fun StatusText(isLoading: Boolean, completed: Boolean) {
             completed -> "The UI confirms completion without stealing focus."
             else -> "Tap the action to preview the loading behavior."
         },
-        color = Color(0xFF65706A),
+        color = Muted,
         textAlign = TextAlign.Center,
         lineHeight = 21.sp
     )
@@ -393,7 +406,7 @@ private fun StepProgress(isLoading: Boolean, completed: Boolean, accent: Color) 
         )
         Text(
             text = if (completed) "Synced" else if (isLoading) "Uploading changes" else "Ready to sync",
-            color = Color(0xFF65706A),
+            color = Muted,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
@@ -410,7 +423,7 @@ private fun OptimisticState(isLoading: Boolean, completed: Boolean, accent: Colo
         Text(
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 13.dp),
             text = if (isLoading || completed) "Visible immediately, confirmed quietly." else "Waiting for the first tap.",
-            color = Color(0xFF303632),
+            color = Ink,
             textAlign = TextAlign.Center
         )
     }

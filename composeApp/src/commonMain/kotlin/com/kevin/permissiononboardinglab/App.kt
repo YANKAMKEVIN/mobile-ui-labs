@@ -47,7 +47,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -55,6 +57,11 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When and how should an app ask for access? Compare value first, rationale, prompt, denial, limited access and Settings."
 
 @Composable
 fun App() {
@@ -144,6 +151,7 @@ private fun PermissionOnboardingLab() {
     var flow by remember { mutableStateOf(PermissionFlowState()) }
     val onAction: (PermissionAction) -> Unit = { flow = reduce(flow, it) }
     val selected = steps.first { it.step == flow.step }
+    val selectStep: (Int) -> Unit = { onAction(PermissionAction.JumpTo(steps[it].step)) }
 
     LazyColumn(
         modifier = Modifier
@@ -157,7 +165,7 @@ private fun PermissionOnboardingLab() {
         item {
             LabHeader(
                 title = "Permission Onboarding Lab",
-                subtitle = "A Compose flow for asking access with context, fallback and trust instead of surprise."
+                subtitle = PITCH
             )
         }
         item {
@@ -166,19 +174,21 @@ private fun PermissionOnboardingLab() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = steps.indexOf(selected),
-                onSelected = { onAction(PermissionAction.JumpTo(steps[it].step)) }
+                onSelected = selectStep
             )
         }
         item {
             AnimatedContent(
                 targetState = flow,
+                modifier = Modifier.swipeBetweenTabs(steps.indexOf(selected), steps.size, selectStep),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "permission-step"
             ) { shown ->
                 PermissionPreview(steps.first { it.step == shown.step }, shown, onAction)
             }
         }
-        item { RuleCard(title = "Decision rule", rule = selected.rule) }
+        item { RuleCard(rule = selected.rule, accent = selected.accent) }
+        item { LabFooter() }
     }
 }
 
@@ -187,7 +197,7 @@ private fun PermissionPreview(step: StepCopy, flow: PermissionFlowState, onActio
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -242,7 +252,7 @@ private fun PhoneMock(step: StepCopy, flow: PermissionFlowState, onAction: (Perm
         Surface(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(20.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Column(
@@ -327,7 +337,7 @@ private fun SystemPrompt(step: StepCopy, onAction: (PermissionAction) -> Unit) {
                 Surface(
                     onClick = { onAction(PermissionAction.SystemDeny) },
                     shape = RoundedCornerShape(50),
-                    color = Color.White,
+                    color = CardColor,
                     border = BorderStroke(1.dp, Line)
                 ) {
                     Text(text = "Deny", fontSize = 13.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp), color = Muted, fontWeight = FontWeight.Bold)
@@ -335,7 +345,7 @@ private fun SystemPrompt(step: StepCopy, onAction: (PermissionAction) -> Unit) {
                 Surface(
                     onClick = { onAction(PermissionAction.SystemAllowSelected) },
                     shape = RoundedCornerShape(50),
-                    color = Color.White,
+                    color = CardColor,
                     border = BorderStroke(1.dp, Line)
                 ) {
                     Text(text = "Selected", fontSize = 13.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp), color = Ink, fontWeight = FontWeight.Bold)

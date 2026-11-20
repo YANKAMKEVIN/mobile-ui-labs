@@ -44,7 +44,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -53,6 +55,11 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.SystemBackHandler
+import com.kevin.labs.ui.swipeBetweenTabs
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "Where should Back take the user? Compare tabs, detail, modal, deep link and Back on a real back stack."
 
 @Composable
 fun App() {
@@ -140,6 +147,10 @@ private fun NavigationBackstackLab() {
     // The stack itself is not saved, so rebuild it from the (saved) scenario tab to stay consistent.
     var nav by remember { mutableStateOf(scenarios[selectedIndex].preset) }
     val selected = scenarios[selectedIndex]
+    val selectScenario: (Int) -> Unit = {
+        selectedIndex = it
+        nav = scenarios[it].preset
+    }
 
     // System Back (Android back gesture / button) drives the same stack as the on-screen Back.
     // Disabled at the root of the start tab so the system can close the app as usual.
@@ -156,7 +167,7 @@ private fun NavigationBackstackLab() {
         item {
             LabHeader(
                 title = "Navigation Backstack Lab",
-                subtitle = "A Compose/KMP lab for visualizing routes, nested flows, modal layers, deep links and Android Back.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }
@@ -166,10 +177,7 @@ private fun NavigationBackstackLab() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = {
-                    selectedIndex = it
-                    nav = scenarios[it].preset
-                },
+                onSelected = selectScenario,
                 modifier = Modifier.padding(start = 20.dp),
                 compact = true
             )
@@ -179,17 +187,19 @@ private fun NavigationBackstackLab() {
                 copy = selected,
                 nav = nav,
                 onNav = { nav = it },
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier
+                    .swipeBetweenTabs(selectedIndex, scenarios.size, selectScenario)
+                    .padding(horizontal = 20.dp)
             )
         }
         item {
             RuleCard(
-                title = "Navigation rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent
             )
         }
+        item { LabFooter(Modifier.padding(horizontal = 20.dp)) }
         item { Spacer(modifier = Modifier.height(2.dp)) }
     }
 }
@@ -204,7 +214,7 @@ private fun BackstackPanel(
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -297,7 +307,7 @@ private fun PhoneTopBar(copy: NavCopy, nav: NavState, onBack: () -> Unit) {
                 .heightIn(min = 48.dp)
                 .alpha(if (canGoBack) 1f else 0.4f),
             shape = RoundedCornerShape(50),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Text(
@@ -322,7 +332,7 @@ private fun DestinationCanvas(copy: NavCopy, nav: NavState) {
         Surface(
             modifier = Modifier.weight(0.9f),
             shape = RoundedCornerShape(18.dp),
-            color = Color.White
+            color = CardColor
         ) {
             Column(
                 modifier = Modifier.padding(12.dp),
@@ -342,7 +352,7 @@ private fun DestinationCanvas(copy: NavCopy, nav: NavState) {
         Surface(
             modifier = Modifier.weight(1.1f),
             shape = RoundedCornerShape(18.dp),
-            color = if (nav.modal != null) copy.accent.copy(alpha = 0.16f) else Color.White
+            color = if (nav.modal != null) copy.accent.copy(alpha = 0.16f) else CardColor
         ) {
             Column(
                 modifier = Modifier.padding(12.dp),
@@ -437,7 +447,7 @@ private fun ControlChip(
         modifier = modifier
             .heightIn(min = 48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(if (selected) accent else Color.White)
+            .background(if (selected) accent else CardColor)
             .clickable(role = role, onClick = onClick)
             .semantics { this.selected = selected },
         contentAlignment = Alignment.Center
@@ -458,7 +468,7 @@ private fun StackRow(route: String, index: Int, isTop: Boolean, isModal: Boolean
             .fillMaxWidth()
             .height(35.dp)
             .clip(RoundedCornerShape(13.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(9.dp)

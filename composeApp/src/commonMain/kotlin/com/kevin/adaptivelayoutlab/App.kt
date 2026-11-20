@@ -25,10 +25,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,10 +38,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -47,6 +54,12 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
+import kotlin.math.roundToInt
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When should a layout change its hierarchy, not just stretch? Compare compact, medium, expanded, foldable and dense."
 
 @Composable
 fun App() {
@@ -55,12 +68,13 @@ fun App() {
     }
 }
 
-private enum class LayoutMode {
-    Compact,
-    Medium,
-    Expanded,
-    Fold,
-    Density
+/** [widthClass] is set for the layouts that a window width alone decides. */
+private enum class LayoutMode(val widthClass: WidthClass?) {
+    Compact(WidthClass.Compact),
+    Medium(WidthClass.Medium),
+    Expanded(WidthClass.Expanded),
+    Fold(null),
+    Density(null)
 }
 
 private data class LayoutCopy(
@@ -125,6 +139,13 @@ private val modes = listOf(
 private fun AdaptiveLayoutLab() {
     var selectedIndex by rememberSaveable { mutableStateOf(2) }
     val selected = modes[selectedIndex]
+    // Width of the simulated window. Dragging it switches the tab at each threshold; picking a
+    // size tab moves it to a typical width for that class.
+    var windowWidth by rememberSaveable { mutableFloatStateOf(typicalWidth(WidthClass.Expanded)) }
+    val selectMode: (Int) -> Unit = { index ->
+        selectedIndex = index
+        modes[index].mode.widthClass?.let { windowWidth = typicalWidth(it) }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -137,7 +158,7 @@ private fun AdaptiveLayoutLab() {
         item {
             LabHeader(
                 title = "Adaptive Layout Lab",
-                subtitle = "A Compose playground for changing hierarchy across compact, wide and foldable surfaces.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }
@@ -147,47 +168,62 @@ private fun AdaptiveLayoutLab() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = { selectedIndex = it },
+                onSelected = selectMode,
                 modifier = Modifier.padding(start = 20.dp)
             )
         }
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size, selectMode),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "layout-mode"
             ) { mode ->
                 LayoutPreview(
                     copy = mode,
+                    windowFraction = if (mode.mode.widthClass != null) previewFraction(windowWidth) else 1f,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
         }
         item {
+            WidthControl(
+                widthDp = windowWidth,
+                onWidthChange = { width ->
+                    windowWidth = width
+                    val mode = LayoutMode.entries.first { it.widthClass == widthClassOf(width) }
+                    selectedIndex = modes.indexOfFirst { it.mode == mode }
+                },
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
+        item {
             RuleCard(
-                title = "Design rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent
             )
         }
+        item { LabFooter(Modifier.padding(horizontal = 20.dp)) }
         item { Spacer(modifier = Modifier.height(2.dp)) }
     }
 }
 
 @Composable
-private fun LayoutPreview(copy: LayoutCopy, modifier: Modifier = Modifier) {
+private fun LayoutPreview(copy: LayoutCopy, windowFraction: Float, modifier: Modifier = Modifier) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier.padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            WindowChrome(copy)
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                WindowChrome(copy, Modifier.fillMaxWidth(windowFraction))
+            }
             Text(
                 text = copy.title,
                 color = Ink,
@@ -205,11 +241,9 @@ private fun LayoutPreview(copy: LayoutCopy, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WindowChrome(copy: LayoutCopy) {
+private fun WindowChrome(copy: LayoutCopy, modifier: Modifier = Modifier) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(260.dp),
+        modifier = modifier.height(260.dp),
         shape = RoundedCornerShape(22.dp),
         color = Paper,
         border = BorderStroke(1.dp, Line)
@@ -268,7 +302,7 @@ private fun CompactPreview(accent: Color) {
                 .fillMaxWidth()
                 .height(36.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Color.White)
+                .background(CardColor)
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -384,7 +418,7 @@ private fun Rail(accent: Color) {
             .width(44.dp)
             .fillMaxHeight()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -421,7 +455,7 @@ private fun HeroBlock(accent: Color, modifier: Modifier) {
                 .fillMaxWidth(0.82f)
                 .height(8.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
+                .background(CardColor)
         )
     }
 }
@@ -432,7 +466,7 @@ private fun ContentRow(accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(38.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -471,7 +505,7 @@ private fun DetailPane(accent: Color, modifier: Modifier) {
         modifier = modifier
             .fillMaxHeight()
             .clip(RoundedCornerShape(18.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -513,7 +547,7 @@ private fun MetricChip(active: Boolean, accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(34.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(if (active) accent else Color.White),
+            .background(if (active) accent else CardColor),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -532,7 +566,7 @@ private fun DenseRow(accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(25.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -557,6 +591,54 @@ private fun DenseRow(accent: Color, modifier: Modifier) {
                 .clip(RoundedCornerShape(6.dp))
                 .background(Line.copy(alpha = 0.72f))
         )
+    }
+}
+
+/** Slider that resizes the simulated window; the layout follows the width class it falls in. */
+@Composable
+private fun WidthControl(widthDp: Float, onWidthChange: (Float) -> Unit, modifier: Modifier = Modifier) {
+    val widthClass = widthClassOf(widthDp)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = CardColor,
+        border = BorderStroke(1.dp, Line)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Window width",
+                    modifier = Modifier.weight(1f),
+                    color = Muted,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${widthDp.roundToInt()} dp · ${widthClass.label}",
+                    color = Ink,
+                    fontWeight = FontWeight.Black
+                )
+            }
+            Slider(
+                value = widthDp,
+                onValueChange = onWidthChange,
+                valueRange = MIN_PREVIEW_WIDTH..MAX_PREVIEW_WIDTH,
+                modifier = Modifier.semantics {
+                    contentDescription = "Window width"
+                    stateDescription = "${widthDp.roundToInt()} dp, ${widthClass.label}"
+                }
+            )
+            Text(
+                text = "${widthClass.label}: ${widthClass.range}. Bottom navigation under 600 dp, " +
+                    "a rail up to 839 dp, list and detail from 840 dp.",
+                color = Muted,
+                fontSize = 13.sp,
+                lineHeight = 18.sp
+            )
+        }
     }
 }
 

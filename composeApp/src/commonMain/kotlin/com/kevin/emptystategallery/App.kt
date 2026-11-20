@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
@@ -59,10 +58,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
+import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
+import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "What should a screen say when it has nothing to show? Compare first run, no results, offline, permission and error."
 
 @Composable
 fun App() {
@@ -187,7 +197,7 @@ private fun EmptyStateGallery() {
         item {
             LabHeader(
                 title = "Empty State Gallery",
-                subtitle = "Five tiny UI patterns for moments where the screen has no content."
+                subtitle = PITCH
             )
         }
         item {
@@ -202,6 +212,7 @@ private fun EmptyStateGallery() {
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, patterns.size) { selectedIndex = it },
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "empty-state-preview"
             ) { pattern ->
@@ -209,8 +220,9 @@ private fun EmptyStateGallery() {
             }
         }
         item {
-            UxNotes(pattern = selected)
+            RuleCard(rule = selected.designTip, accent = selected.accent, note = selected.uxNote)
         }
+        item { LabFooter() }
     }
 }
 
@@ -233,7 +245,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -274,7 +286,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
                     Text(
                         text = if (phase == PreviewPhase.Loading) "Loading..." else pattern.message,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF656D67),
+                        color = Muted,
                         textAlign = TextAlign.Center,
                         lineHeight = 21.sp
                     )
@@ -357,7 +369,7 @@ private fun FilledContent(pattern: EmptyStatePattern, note: String?, onReset: ()
                         tint = pattern.accent,
                         modifier = Modifier.size(20.dp)
                     )
-                    Text(item, fontWeight = FontWeight.SemiBold, color = Color(0xFF171B18))
+                    Text(item, fontWeight = FontWeight.SemiBold, color = Ink)
                 }
             }
         }
@@ -381,7 +393,7 @@ private fun EmptyIllustration(pattern: EmptyStatePattern, loading: Boolean) {
                 Brush.linearGradient(
                     colors = listOf(
                         pattern.accent.copy(alpha = 0.18f),
-                        Color(0xFFF8F4EE)
+                        Paper
                     )
                 )
             )
@@ -403,45 +415,6 @@ private fun EmptyIllustration(pattern: EmptyStatePattern, loading: Boolean) {
                     imageVector = pattern.icon,
                     contentDescription = null,
                     tint = pattern.accent
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun UxNotes(pattern: EmptyStatePattern) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF171B18)),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(
-                imageVector = Icons.Filled.MailOutline,
-                contentDescription = null,
-                tint = Color(0xFFB7F2D1)
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "UX note",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = pattern.designTip,
-                    color = Color(0xFFD6DDD8),
-                    lineHeight = 20.sp
-                )
-                Text(
-                    text = pattern.uxNote,
-                    color = Color(0xFFB7F2D1),
-                    lineHeight = 20.sp
                 )
             }
         }

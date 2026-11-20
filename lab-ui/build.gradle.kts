@@ -32,6 +32,9 @@ kotlin {
             api(compose.ui)
             api(libs.material.icons.core)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

@@ -53,16 +53,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.Inverse
+import com.kevin.labs.ui.InverseAction
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.OnInverse
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.StatusDot
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "Where should feedback live after an action? Compare inline error, snackbar, banner, undo and blocking dialog."
 
 @Composable
 fun App() {
@@ -163,6 +173,12 @@ private fun FeedbackSurfaceLab() {
         }
     }
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        activeKind = null
+        snackbarHostState.currentSnackbarData?.dismiss()
+    }
+
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -176,7 +192,7 @@ private fun FeedbackSurfaceLab() {
             item {
                 LabHeader(
                     title = "Feedback Surface Lab",
-                    subtitle = "A product-minded Compose lab for choosing where feedback should live after an interaction."
+                    subtitle = PITCH
                 )
             }
             item {
@@ -185,16 +201,13 @@ private fun FeedbackSurfaceLab() {
                     label = { it.title },
                     accent = { it.accent },
                     selectedIndex = selectedIndex,
-                    onSelected = {
-                        selectedIndex = it
-                        activeKind = null
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                    }
+                    onSelected = selectPattern
                 )
             }
             item {
                 AnimatedContent(
                     targetState = selected,
+                    modifier = Modifier.swipeBetweenTabs(selectedIndex, feedbackPatterns.size, selectPattern),
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = "feedback-pattern"
                 ) { pattern ->
@@ -206,7 +219,8 @@ private fun FeedbackSurfaceLab() {
                     )
                 }
             }
-            item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { RuleCard(rule = selected.rule, accent = selected.accent) }
+            item { LabFooter() }
             item { Spacer(Modifier.height(74.dp)) }
         }
 
@@ -218,12 +232,12 @@ private fun FeedbackSurfaceLab() {
                 .padding(16.dp)
         ) { data ->
             Snackbar(
-                containerColor = Ink,
-                contentColor = Color.White,
+                containerColor = Inverse,
+                contentColor = OnInverse,
                 action = {
                     data.visuals.actionLabel?.let { label ->
                         TextButton(onClick = { data.performAction() }) {
-                            Text(label, color = Color(0xFFFFD166), fontWeight = FontWeight.Black)
+                            Text(label, color = InverseAction, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -244,7 +258,7 @@ private fun FeedbackPreview(
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -316,7 +330,7 @@ private fun MockProductSurface(
                     )
                 }
             }
-            Surface(shape = RoundedCornerShape(18.dp), color = Color.White) {
+            Surface(shape = RoundedCornerShape(18.dp), color = CardColor) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         StatusDot(pattern.accent)
@@ -353,7 +367,7 @@ private fun MockProductSurface(
             Surface(
                 modifier = Modifier.fillMaxWidth(0.88f),
                 shape = RoundedCornerShape(20.dp),
-                color = Color.White,
+                color = CardColor,
                 shadowElevation = 8.dp,
                 border = BorderStroke(1.dp, Line)
             ) {
@@ -386,7 +400,7 @@ private fun FieldPreview(label: String, value: String, error: Boolean) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, if (error) Danger else Line)
         ) {
             Text(

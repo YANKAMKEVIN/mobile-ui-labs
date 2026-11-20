@@ -55,26 +55,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.Inverse
+import com.kevin.labs.ui.InverseAction
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.OnInverse
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.StatusDot
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When should a swipe trigger an action? Compare archive, pin, mute, delete and complete, with undo and safe thresholds."
 
 @Composable
 fun App() {
@@ -158,6 +169,7 @@ private val inboxItems = listOf(
 
 @Composable
 private fun SwipeActionLab() {
+    val haptics = LocalHapticFeedback.current
     var selectedIndex by rememberSaveable { mutableStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -176,7 +188,7 @@ private fun SwipeActionLab() {
             item {
                 LabHeader(
                     title = "Swipe Action Lab",
-                    subtitle = "A Compose experiment for making swipe actions discoverable, reversible and hard to trigger by accident."
+                    subtitle = PITCH
                 )
             }
             item {
@@ -206,13 +218,17 @@ private fun SwipeActionLab() {
                                     message = "${pattern.action}: ${item.title}",
                                     actionLabel = "UNDO"
                                 )
-                                if (result == SnackbarResult.ActionPerformed) undo()
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    undo()
+                                }
                             }
                         }
                     )
                 }
             }
-            item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { RuleCard(rule = selected.rule, accent = selected.accent) }
+            item { LabFooter() }
             item { Spacer(Modifier.height(74.dp)) }
         }
 
@@ -224,12 +240,12 @@ private fun SwipeActionLab() {
                 .padding(16.dp)
         ) { data ->
             Snackbar(
-                containerColor = Ink,
-                contentColor = Color.White,
+                containerColor = Inverse,
+                contentColor = OnInverse,
                 action = {
                     data.visuals.actionLabel?.let { label ->
                         TextButton(onClick = { data.performAction() }) {
-                            Text(label, color = Color(0xFFFFD166), fontWeight = FontWeight.Black)
+                            Text(label, color = InverseAction, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -249,7 +265,7 @@ private fun SwipePreview(pattern: SwipePattern, onAction: (InboxItem, undo: () -
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -266,7 +282,7 @@ private fun SwipePreview(pattern: SwipePattern, onAction: (InboxItem, undo: () -
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "Drag the top card. The action reveals first, then commits after the threshold.",
+                text = "Drag the top card. The action reveals first, then commits after the threshold, with a light vibration as you cross it.",
                 color = Muted,
                 lineHeight = 21.sp,
                 textAlign = TextAlign.Center,
@@ -341,6 +357,14 @@ private fun SwipeCard(
     }
     val actionAlpha by animateFloatAsState(if (progress > 0.12f) 1f else 0.45f, label = "action-alpha")
 
+    // A light tick under the finger the moment releasing would commit the action (and again if
+    // the card is dragged back under the threshold and over it once more).
+    val haptics = LocalHapticFeedback.current
+    val armed = abs(dragOffset) >= threshold
+    LaunchedEffect(armed) {
+        if (armed && !committed) haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -388,7 +412,7 @@ private fun SwipeCard(
                     }
                 },
             shape = RoundedCornerShape(18.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Column(

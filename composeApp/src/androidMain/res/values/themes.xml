@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light or dark platform base (the night variant lives in values-night). -->
+    <style name="Base.Theme.Labs" parent="@android:style/Theme.Material.Light.NoActionBar" />
+
+    <!-- Window theme behind the Compose content: paper from the first frame, no white flash. -->
+    <style name="Theme.Labs" parent="Base.Theme.Labs">
+        <item name="android:windowBackground">@color/paper</item>
+    </style>
+</resources>

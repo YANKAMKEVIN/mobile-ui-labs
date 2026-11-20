@@ -50,7 +50,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -58,7 +60,12 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "What should search show at every moment? Compare idle, suggestions, loading, results, empty and error, driven by a tested reducer."
 
 @Composable
 fun App() {
@@ -149,6 +156,16 @@ private fun SearchStateMachine() {
         state = reduce(state, event)
     }
     val selected = states.first { it.state == state.phase }
+    val selectState: (Int) -> Unit = { index ->
+        val demo = states[index]
+        dispatch(
+            when (demo.state) {
+                SearchPhase.Idle -> SearchEvent.Clear
+                SearchPhase.Suggest -> SearchEvent.QueryChanged(demo.demoQuery)
+                else -> SearchEvent.Submitted(demo.demoQuery)
+            }
+        )
+    }
 
     // Debounce: restarted on every keystroke, only the last one reaches the reducer.
     LaunchedEffect(state.query, state.phase) {
@@ -184,7 +201,7 @@ private fun SearchStateMachine() {
         item {
             LabHeader(
                 title = "Search State Machine",
-                subtitle = "A Compose lab for designing search as a flow: intent, feedback, result quality and recovery.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }
@@ -194,16 +211,7 @@ private fun SearchStateMachine() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = states.indexOf(selected),
-                onSelected = { index ->
-                    val demo = states[index]
-                    dispatch(
-                        when (demo.state) {
-                            SearchPhase.Idle -> SearchEvent.Clear
-                            SearchPhase.Suggest -> SearchEvent.QueryChanged(demo.demoQuery)
-                            else -> SearchEvent.Submitted(demo.demoQuery)
-                        }
-                    )
-                },
+                onSelected = selectState,
                 modifier = Modifier.padding(start = 20.dp),
                 compact = true
             )
@@ -213,17 +221,19 @@ private fun SearchStateMachine() {
                 copy = selected,
                 state = state,
                 onEvent = ::dispatch,
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier
+                    .swipeBetweenTabs(states.indexOf(selected), states.size, selectState)
+                    .padding(horizontal = 20.dp)
             )
         }
         item {
             RuleCard(
-                title = "State rule",
                 rule = selected.rule,
                 modifier = Modifier.padding(horizontal = 20.dp),
                 accent = selected.accent
             )
         }
+        item { LabFooter(Modifier.padding(horizontal = 20.dp)) }
         item { Spacer(modifier = Modifier.height(2.dp)) }
     }
 }
@@ -238,7 +248,7 @@ private fun SearchPanel(
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -341,7 +351,7 @@ private fun SearchField(copy: SearchCopy, query: String, onEvent: (SearchEvent) 
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color.White,
+                        color = CardColor,
                         border = BorderStroke(1.dp, Line)
                     ) {
                         Text(
@@ -432,7 +442,7 @@ private fun LoadingContent(accent: Color, query: String) {
                 .height(8.dp)
                 .clip(RoundedCornerShape(50)),
             color = accent,
-            trackColor = Color.White
+            trackColor = CardColor
         )
         repeat(4) {
             SkeletonRow()
@@ -539,7 +549,7 @@ private fun SuggestionRow(label: String, accent: Color, onClick: () -> Unit) {
             .fillMaxWidth()
             .height(42.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -567,7 +577,7 @@ private fun ResultRow(label: String, meta: String, accent: Color) {
             .fillMaxWidth()
             .height(64.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -595,7 +605,7 @@ private fun SkeletonRow() {
             .fillMaxWidth()
             .height(44.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -634,7 +644,7 @@ private fun RecoveryAction(label: String, color: Color, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(15.dp),
-        color = if (color == Line) Color.White else color,
+        color = if (color == Line) CardColor else color,
         border = if (color == Line) BorderStroke(1.dp, Line) else null
     ) {
         Text(

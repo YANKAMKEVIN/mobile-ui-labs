@@ -55,7 +55,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -63,7 +65,12 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
+
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When is a bottom sheet the right surface? Compare confirm, filters, peek, short form and actions."
 
 @Composable
 fun App() {
@@ -142,6 +149,11 @@ private fun BottomSheetPlaybook() {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = selected.kind != SheetKind.Peek)
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        openPattern = null
+    }
+
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -155,7 +167,7 @@ private fun BottomSheetPlaybook() {
             item {
                 LabHeader(
                     title = "Bottom Sheet Playbook",
-                    subtitle = "A compact UI lab for choosing the right sheet pattern without turning every task into a hidden page."
+                    subtitle = PITCH
                 )
             }
             item {
@@ -164,29 +176,28 @@ private fun BottomSheetPlaybook() {
                     label = { it.title },
                     accent = { it.accent },
                     selectedIndex = selectedIndex,
-                    onSelected = {
-                        selectedIndex = it
-                        openPattern = null
-                    }
+                    onSelected = selectPattern
                 )
             }
             item {
                 AnimatedContent(
                     targetState = selected,
+                    modifier = Modifier.swipeBetweenTabs(selectedIndex, sheetPatterns.size, selectPattern),
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = "selected-sheet"
                 ) { pattern ->
                     SheetPreview(pattern = pattern, onOpen = { openPattern = pattern })
                 }
             }
-            item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { RuleCard(rule = selected.rule, accent = selected.accent) }
+            item { LabFooter() }
         }
 
         if (openPattern != null) {
             ModalBottomSheet(
                 onDismissRequest = { openPattern = null },
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = CardColor,
                 shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
             ) {
                 SheetContent(
@@ -210,7 +221,7 @@ private fun BottomSheetPlaybook() {
 private fun SheetPreview(pattern: SheetPattern, onOpen: () -> Unit) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
@@ -263,7 +274,7 @@ private fun SheetAnatomy(pattern: SheetPattern) {
                 .fillMaxWidth(if (pattern.kind == SheetKind.Peek) 0.84f else 0.92f)
                 .height(if (pattern.kind == SheetKind.Peek) 76.dp else 108.dp)
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                .background(Color.White)
+                .background(CardColor)
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
