@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An ink card on the paper: two lines of text and three accent dots (green, clay, violet),
+     the colours of the series. Kept inside the 66 dp safe zone of adaptive icons. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#111713"
+        android:pathData="M42,30h24a8,8 0,0 1,8 8v32a8,8 0,0 1,-8 8h-24a8,8 0,0 1,-8 -8v-32a8,8 0,0 1,8 -8z" />
+    <path
+        android:fillColor="#F5F0E8"
+        android:pathData="M43,39h18a2.5,2.5 0,0 1,0 5h-18a2.5,2.5 0,0 1,0 -5z" />
+    <path
+        android:fillColor="#9AA39C"
+        android:pathData="M43,48h12a2,2 0,0 1,0 4h-12a2,2 0,0 1,0 -4z" />
+    <path
+        android:fillColor="#0E6A59"
+        android:pathData="M44,66m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0" />
+    <path
+        android:fillColor="#B5532A"
+        android:pathData="M54,66m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0" />
+    <path
+        android:fillColor="#6B57B8"
+        android:pathData="M64,66m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0" />
+</vector>
