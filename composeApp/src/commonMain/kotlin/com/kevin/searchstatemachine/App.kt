@@ -58,6 +58,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
 @Composable
@@ -149,6 +150,16 @@ private fun SearchStateMachine() {
         state = reduce(state, event)
     }
     val selected = states.first { it.state == state.phase }
+    val selectState: (Int) -> Unit = { index ->
+        val demo = states[index]
+        dispatch(
+            when (demo.state) {
+                SearchPhase.Idle -> SearchEvent.Clear
+                SearchPhase.Suggest -> SearchEvent.QueryChanged(demo.demoQuery)
+                else -> SearchEvent.Submitted(demo.demoQuery)
+            }
+        )
+    }
 
     // Debounce: restarted on every keystroke, only the last one reaches the reducer.
     LaunchedEffect(state.query, state.phase) {
@@ -194,16 +205,7 @@ private fun SearchStateMachine() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = states.indexOf(selected),
-                onSelected = { index ->
-                    val demo = states[index]
-                    dispatch(
-                        when (demo.state) {
-                            SearchPhase.Idle -> SearchEvent.Clear
-                            SearchPhase.Suggest -> SearchEvent.QueryChanged(demo.demoQuery)
-                            else -> SearchEvent.Submitted(demo.demoQuery)
-                        }
-                    )
-                },
+                onSelected = selectState,
                 modifier = Modifier.padding(start = 20.dp),
                 compact = true
             )
@@ -213,7 +215,9 @@ private fun SearchStateMachine() {
                 copy = selected,
                 state = state,
                 onEvent = ::dispatch,
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier
+                    .swipeBetweenTabs(states.indexOf(selected), states.size, selectState)
+                    .padding(horizontal = 20.dp)
             )
         }
         item {

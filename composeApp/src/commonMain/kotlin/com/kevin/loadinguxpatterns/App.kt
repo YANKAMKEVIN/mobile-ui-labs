@@ -58,6 +58,7 @@ import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
 @Composable
@@ -141,6 +142,13 @@ private fun LoadingGallery() {
         completed = false
     }
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        runId = 0
+        isLoading = false
+        completed = false
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -162,17 +170,13 @@ private fun LoadingGallery() {
                 label = { it.title },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = {
-                    selectedIndex = it
-                    runId = 0
-                    isLoading = false
-                    completed = false
-                }
+                onSelected = selectPattern
             )
         }
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, patterns.size, selectPattern),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "loading-pattern"
             ) { pattern ->

@@ -52,6 +52,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import com.kevin.labs.ui.SystemBackHandler
 
 @Composable
@@ -140,6 +141,10 @@ private fun NavigationBackstackLab() {
     // The stack itself is not saved, so rebuild it from the (saved) scenario tab to stay consistent.
     var nav by remember { mutableStateOf(scenarios[selectedIndex].preset) }
     val selected = scenarios[selectedIndex]
+    val selectScenario: (Int) -> Unit = {
+        selectedIndex = it
+        nav = scenarios[it].preset
+    }
 
     // System Back (Android back gesture / button) drives the same stack as the on-screen Back.
     // Disabled at the root of the start tab so the system can close the app as usual.
@@ -166,10 +171,7 @@ private fun NavigationBackstackLab() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = {
-                    selectedIndex = it
-                    nav = scenarios[it].preset
-                },
+                onSelected = selectScenario,
                 modifier = Modifier.padding(start = 20.dp),
                 compact = true
             )
@@ -179,7 +181,9 @@ private fun NavigationBackstackLab() {
                 copy = selected,
                 nav = nav,
                 onNav = { nav = it },
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier
+                    .swipeBetweenTabs(selectedIndex, scenarios.size, selectScenario)
+                    .padding(horizontal = 20.dp)
             )
         }
         item {

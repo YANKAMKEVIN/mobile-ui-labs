@@ -47,6 +47,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 
 @Composable
 fun App() {
@@ -154,6 +155,7 @@ private fun AdaptiveLayoutLab() {
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size) { selectedIndex = it },
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "layout-mode"
             ) { mode ->

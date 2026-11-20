@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
 @Composable
@@ -202,6 +203,7 @@ private fun EmptyStateGallery() {
         item {
             AnimatedContent(
                 targetState = selected,
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, patterns.size) { selectedIndex = it },
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "empty-state-preview"
             ) { pattern ->

@@ -61,6 +61,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import com.kevin.labs.ui.StatusDot
 import kotlinx.coroutines.launch
 
@@ -163,6 +164,12 @@ private fun FeedbackSurfaceLab() {
         }
     }
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        activeKind = null
+        snackbarHostState.currentSnackbarData?.dismiss()
+    }
+
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -185,16 +192,13 @@ private fun FeedbackSurfaceLab() {
                     label = { it.title },
                     accent = { it.accent },
                     selectedIndex = selectedIndex,
-                    onSelected = {
-                        selectedIndex = it
-                        activeKind = null
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                    }
+                    onSelected = selectPattern
                 )
             }
             item {
                 AnimatedContent(
                     targetState = selected,
+                    modifier = Modifier.swipeBetweenTabs(selectedIndex, feedbackPatterns.size, selectPattern),
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = "feedback-pattern"
                 ) { pattern ->

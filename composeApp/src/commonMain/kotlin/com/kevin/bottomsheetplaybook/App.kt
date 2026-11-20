@@ -63,6 +63,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
 
 @Composable
@@ -142,6 +143,11 @@ private fun BottomSheetPlaybook() {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = selected.kind != SheetKind.Peek)
 
+    val selectPattern: (Int) -> Unit = {
+        selectedIndex = it
+        openPattern = null
+    }
+
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -164,15 +170,13 @@ private fun BottomSheetPlaybook() {
                     label = { it.title },
                     accent = { it.accent },
                     selectedIndex = selectedIndex,
-                    onSelected = {
-                        selectedIndex = it
-                        openPattern = null
-                    }
+                    onSelected = selectPattern
                 )
             }
             item {
                 AnimatedContent(
                     targetState = selected,
+                    modifier = Modifier.swipeBetweenTabs(selectedIndex, sheetPatterns.size, selectPattern),
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = "selected-sheet"
                 ) { pattern ->

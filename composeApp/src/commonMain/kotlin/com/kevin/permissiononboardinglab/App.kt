@@ -55,6 +55,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
+import com.kevin.labs.ui.swipeBetweenTabs
 
 @Composable
 fun App() {
@@ -144,6 +145,7 @@ private fun PermissionOnboardingLab() {
     var flow by remember { mutableStateOf(PermissionFlowState()) }
     val onAction: (PermissionAction) -> Unit = { flow = reduce(flow, it) }
     val selected = steps.first { it.step == flow.step }
+    val selectStep: (Int) -> Unit = { onAction(PermissionAction.JumpTo(steps[it].step)) }
 
     LazyColumn(
         modifier = Modifier
@@ -166,12 +168,13 @@ private fun PermissionOnboardingLab() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = steps.indexOf(selected),
-                onSelected = { onAction(PermissionAction.JumpTo(steps[it].step)) }
+                onSelected = selectStep
             )
         }
         item {
             AnimatedContent(
                 targetState = flow,
+                modifier = Modifier.swipeBetweenTabs(steps.indexOf(selected), steps.size, selectStep),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "permission-step"
             ) { shown ->
