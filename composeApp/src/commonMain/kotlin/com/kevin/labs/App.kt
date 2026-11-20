@@ -1,5 +1,11 @@
 package com.kevin.labs
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -31,12 +37,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +60,7 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.LocalLabHosted
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
-import com.kevin.labs.ui.SystemBackHandler
+import com.kevin.labs.ui.PredictiveBackHandler
 
 /** The whole app; [darkTheme] follows the system setting unless forced. */
 @Composable
@@ -59,14 +68,42 @@ fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
     LabTheme(primary = Ink, secondary = Muted, darkTheme = darkTheme) {
         // The open lab is saved by id, so rotation or process death brings the user back to it.
         var openId by rememberSaveable { mutableStateOf<String?>(null) }
-        val open = labs.firstOrNull { it.id == openId }
-        if (open == null) {
-            Catalog(onOpen = { openId = it.id })
-        } else {
-            LabScreen(lab = open, onBack = { openId = null })
+        // 0..1 while an Android predictive back gesture pulls the open lab away.
+        var backProgress by remember { mutableFloatStateOf(0f) }
+        AnimatedContent(
+            targetState = openId,
+            transitionSpec = {
+                // Deeper in the catalog order slides in from the end, going back slides out to it.
+                if (labOrder(targetState) > labOrder(initialState)) {
+                    (slideInHorizontally { it } + fadeIn()) togetherWith
+                        (slideOutHorizontally { -it / 4 } + fadeOut())
+                } else {
+                    (slideInHorizontally { -it / 4 } + fadeIn()) togetherWith
+                        (slideOutHorizontally { it } + fadeOut())
+                }
+            },
+            label = "lab-navigation"
+        ) { id ->
+            val open = labs.firstOrNull { it.id == id }
+            if (open == null) {
+                Catalog(onOpen = {
+                    backProgress = 0f
+                    openId = it.id
+                })
+            } else {
+                LabScreen(
+                    lab = open,
+                    onBack = { openId = null },
+                    backProgress = backProgress,
+                    onBackProgress = { backProgress = it }
+                )
+            }
         }
     }
 }
+
+/** Position of a lab in the catalog; the catalog itself (null) comes first. */
+internal fun labOrder(id: String?): Int = labs.indexOfFirst { it.id == id }
 
 @Composable
 fun Catalog(onOpen: (Lab) -> Unit) {
@@ -119,12 +156,36 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
 
 /**
  * A lab under a slim top bar: Back to the catalog and the lab title. The lab's own header then
- * shrinks to a one-line pitch ([LocalLabHosted]). System Back also returns to the catalog.
+ * shrinks to a one-line pitch ([LocalLabHosted]). System Back also returns to the catalog, and the
+ * screen follows the predictive back gesture through [backProgress].
  */
 @Composable
-fun LabScreen(lab: Lab, onBack: () -> Unit) {
-    SystemBackHandler(enabled = true, onBack = onBack)
-    Column(Modifier.fillMaxSize()) {
+fun LabScreen(
+    lab: Lab,
+    onBack: () -> Unit,
+    backProgress: Float = 0f,
+    onBackProgress: (Float) -> Unit = {}
+) {
+    PredictiveBackHandler(
+        enabled = true,
+        onProgress = onBackProgress,
+        onCancel = { onBackProgress(0f) },
+        onBack = onBack
+    )
+    // During the gesture the lab shrinks a little and follows the finger, revealing where Back leads.
+    Column(
+        Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                val scale = 1f - 0.1f * backProgress
+                scaleX = scale
+                scaleY = scale
+                translationX = backProgress * 24.dp.toPx()
+                shape = RoundedCornerShape(28.dp * backProgress)
+                clip = backProgress > 0f
+            }
+            .background(Paper)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
