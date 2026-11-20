@@ -55,9 +55,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -163,6 +165,7 @@ private val inboxItems = listOf(
 
 @Composable
 private fun SwipeActionLab() {
+    val haptics = LocalHapticFeedback.current
     var selectedIndex by rememberSaveable { mutableStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -211,7 +214,10 @@ private fun SwipeActionLab() {
                                     message = "${pattern.action}: ${item.title}",
                                     actionLabel = "UNDO"
                                 )
-                                if (result == SnackbarResult.ActionPerformed) undo()
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    undo()
+                                }
                             }
                         }
                     )
@@ -272,7 +278,7 @@ private fun SwipePreview(pattern: SwipePattern, onAction: (InboxItem, undo: () -
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "Drag the top card. The action reveals first, then commits after the threshold.",
+                text = "Drag the top card. The action reveals first, then commits after the threshold, with a light vibration as you cross it.",
                 color = Muted,
                 lineHeight = 21.sp,
                 textAlign = TextAlign.Center,
@@ -346,6 +352,14 @@ private fun SwipeCard(
         }
     }
     val actionAlpha by animateFloatAsState(if (progress > 0.12f) 1f else 0.45f, label = "action-alpha")
+
+    // A light tick under the finger the moment releasing would commit the action (and again if
+    // the card is dragged back under the threshold and over it once more).
+    val haptics = LocalHapticFeedback.current
+    val armed = abs(dragOffset) >= threshold
+    LaunchedEffect(armed) {
+        if (armed && !committed) haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+    }
 
     Box(
         modifier = Modifier
