@@ -59,9 +59,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
+import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
+import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
@@ -235,7 +239,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -276,7 +280,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
                     Text(
                         text = if (phase == PreviewPhase.Loading) "Loading..." else pattern.message,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF656D67),
+                        color = Muted,
                         textAlign = TextAlign.Center,
                         lineHeight = 21.sp
                     )
@@ -359,7 +363,7 @@ private fun FilledContent(pattern: EmptyStatePattern, note: String?, onReset: ()
                         tint = pattern.accent,
                         modifier = Modifier.size(20.dp)
                     )
-                    Text(item, fontWeight = FontWeight.SemiBold, color = Color(0xFF171B18))
+                    Text(item, fontWeight = FontWeight.SemiBold, color = Ink)
                 }
             }
         }
@@ -383,7 +387,7 @@ private fun EmptyIllustration(pattern: EmptyStatePattern, loading: Boolean) {
                 Brush.linearGradient(
                     colors = listOf(
                         pattern.accent.copy(alpha = 0.18f),
-                        Color(0xFFF8F4EE)
+                        Paper
                     )
                 )
             )

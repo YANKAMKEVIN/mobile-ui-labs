@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -182,7 +183,7 @@ private fun LayoutPreview(copy: LayoutCopy, modifier: Modifier = Modifier) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -270,7 +271,7 @@ private fun CompactPreview(accent: Color) {
                 .fillMaxWidth()
                 .height(36.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Color.White)
+                .background(CardColor)
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -386,7 +387,7 @@ private fun Rail(accent: Color) {
             .width(44.dp)
             .fillMaxHeight()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -423,7 +424,7 @@ private fun HeroBlock(accent: Color, modifier: Modifier) {
                 .fillMaxWidth(0.82f)
                 .height(8.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
+                .background(CardColor)
         )
     }
 }
@@ -434,7 +435,7 @@ private fun ContentRow(accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(38.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -473,7 +474,7 @@ private fun DetailPane(accent: Color, modifier: Modifier) {
         modifier = modifier
             .fillMaxHeight()
             .clip(RoundedCornerShape(18.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -515,7 +516,7 @@ private fun MetricChip(active: Boolean, accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(34.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(if (active) accent else Color.White),
+            .background(if (active) accent else CardColor),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -534,7 +535,7 @@ private fun DenseRow(accent: Color, modifier: Modifier) {
         modifier = modifier
             .height(25.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)

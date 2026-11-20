@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -182,7 +183,7 @@ private fun NotesPanel(copy: SyncCopy, modifier: Modifier = Modifier) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -240,7 +241,7 @@ private fun NoteEditor(copy: SyncCopy) {
                 }
                 Surface(
                     shape = RoundedCornerShape(50),
-                    color = if (copy.mode == SyncMode.Offline) Gold else Color.White,
+                    color = if (copy.mode == SyncMode.Offline) Gold else CardColor,
                     border = BorderStroke(1.dp, if (copy.mode == SyncMode.Offline) Gold else Line)
                 ) {
                     Text(
@@ -264,7 +265,7 @@ private fun NoteEditor(copy: SyncCopy) {
                         .height(8.dp)
                         .clip(RoundedCornerShape(50)),
                     color = copy.accent,
-                    trackColor = Color.White
+                    trackColor = CardColor
                 )
             }
         }
@@ -304,7 +305,7 @@ private fun TimelineRow(label: String, meta: String, color: Color, active: Boole
             .fillMaxWidth()
             .height(40.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -337,7 +338,7 @@ private fun ConflictBox(accent: Color) {
             .fillMaxWidth()
             .height(74.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {

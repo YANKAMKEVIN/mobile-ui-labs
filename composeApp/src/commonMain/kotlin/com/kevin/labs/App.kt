@@ -2,6 +2,7 @@ package com.kevin.labs
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTheme
@@ -51,9 +53,10 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.SystemBackHandler
 
+/** The whole app; [darkTheme] follows the system setting unless forced. */
 @Composable
-fun App() {
-    LabTheme(primary = Ink, secondary = Muted) {
+fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
+    LabTheme(primary = Ink, secondary = Muted, darkTheme = darkTheme) {
         // The open lab is saved by id, so rotation or process death brings the user back to it.
         var openId by rememberSaveable { mutableStateOf<String?>(null) }
         val open = labs.firstOrNull { it.id == openId }
@@ -92,7 +95,7 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = CardColor,
         border = BorderStroke(1.dp, Line)
     ) {
         Row(

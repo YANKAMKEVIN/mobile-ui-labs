@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -190,7 +191,7 @@ private fun BottomSheetPlaybook() {
             ModalBottomSheet(
                 onDismissRequest = { openPattern = null },
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = CardColor,
                 shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
             ) {
                 SheetContent(
@@ -214,7 +215,7 @@ private fun BottomSheetPlaybook() {
 private fun SheetPreview(pattern: SheetPattern, onOpen: () -> Unit) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
@@ -267,7 +268,7 @@ private fun SheetAnatomy(pattern: SheetPattern) {
                 .fillMaxWidth(if (pattern.kind == SheetKind.Peek) 0.84f else 0.92f)
                 .height(if (pattern.kind == SheetKind.Peek) 76.dp else 108.dp)
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                .background(Color.White)
+                .background(CardColor)
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)

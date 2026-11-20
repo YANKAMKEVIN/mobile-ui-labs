@@ -53,16 +53,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.Inverse
+import com.kevin.labs.ui.InverseAction
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.OnInverse
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
-import com.kevin.labs.ui.swipeBetweenTabs
 import com.kevin.labs.ui.StatusDot
+import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
 
 @Composable
@@ -222,12 +226,12 @@ private fun FeedbackSurfaceLab() {
                 .padding(16.dp)
         ) { data ->
             Snackbar(
-                containerColor = Ink,
-                contentColor = Color.White,
+                containerColor = Inverse,
+                contentColor = OnInverse,
                 action = {
                     data.visuals.actionLabel?.let { label ->
                         TextButton(onClick = { data.performAction() }) {
-                            Text(label, color = Color(0xFFFFD166), fontWeight = FontWeight.Black)
+                            Text(label, color = InverseAction, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -248,7 +252,7 @@ private fun FeedbackPreview(
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -320,7 +324,7 @@ private fun MockProductSurface(
                     )
                 }
             }
-            Surface(shape = RoundedCornerShape(18.dp), color = Color.White) {
+            Surface(shape = RoundedCornerShape(18.dp), color = CardColor) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         StatusDot(pattern.accent)
@@ -357,7 +361,7 @@ private fun MockProductSurface(
             Surface(
                 modifier = Modifier.fillMaxWidth(0.88f),
                 shape = RoundedCornerShape(20.dp),
-                color = Color.White,
+                color = CardColor,
                 shadowElevation = 8.dp,
                 border = BorderStroke(1.dp, Line)
             ) {
@@ -390,7 +394,7 @@ private fun FieldPreview(label: String, value: String, error: Boolean) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, if (error) Danger else Line)
         ) {
             Text(

@@ -63,12 +63,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.Inverse
+import com.kevin.labs.ui.InverseAction
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
+import com.kevin.labs.ui.OnInverse
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.StatusDot
 import kotlin.math.abs
@@ -224,12 +228,12 @@ private fun SwipeActionLab() {
                 .padding(16.dp)
         ) { data ->
             Snackbar(
-                containerColor = Ink,
-                contentColor = Color.White,
+                containerColor = Inverse,
+                contentColor = OnInverse,
                 action = {
                     data.visuals.actionLabel?.let { label ->
                         TextButton(onClick = { data.performAction() }) {
-                            Text(label, color = Color(0xFFFFD166), fontWeight = FontWeight.Black)
+                            Text(label, color = InverseAction, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -249,7 +253,7 @@ private fun SwipePreview(pattern: SwipePattern, onAction: (InboxItem, undo: () -
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -388,7 +392,7 @@ private fun SwipeCard(
                     }
                 },
             shape = RoundedCornerShape(18.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Column(

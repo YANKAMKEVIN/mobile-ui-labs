@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window theme behind the Compose content. A night variant lives in values-night. -->
+    <style name="Theme.Labs" parent="@android:style/Theme.Material.Light.NoActionBar" />
+</resources>

@@ -119,7 +119,7 @@ fun <T> LabTabs(
                     }
                     .selectable(selected = selected, role = Role.Tab, onClick = { onSelected(index) }),
                 shape = RoundedCornerShape(50),
-                color = if (selected) color else Color.White,
+                color = if (selected) color else CardColor,
                 border = BorderStroke(1.dp, if (selected) color else Line)
             ) {
                 Text(

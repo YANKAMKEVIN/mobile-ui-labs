@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -242,7 +243,7 @@ private fun SearchPanel(
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -345,7 +346,7 @@ private fun SearchField(copy: SearchCopy, query: String, onEvent: (SearchEvent) 
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color.White,
+                        color = CardColor,
                         border = BorderStroke(1.dp, Line)
                     ) {
                         Text(
@@ -436,7 +437,7 @@ private fun LoadingContent(accent: Color, query: String) {
                 .height(8.dp)
                 .clip(RoundedCornerShape(50)),
             color = accent,
-            trackColor = Color.White
+            trackColor = CardColor
         )
         repeat(4) {
             SkeletonRow()
@@ -543,7 +544,7 @@ private fun SuggestionRow(label: String, accent: Color, onClick: () -> Unit) {
             .fillMaxWidth()
             .height(42.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -571,7 +572,7 @@ private fun ResultRow(label: String, meta: String, accent: Color) {
             .fillMaxWidth()
             .height(64.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -599,7 +600,7 @@ private fun SkeletonRow() {
             .fillMaxWidth()
             .height(44.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -638,7 +639,7 @@ private fun RecoveryAction(label: String, color: Color, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(15.dp),
-        color = if (color == Line) Color.White else color,
+        color = if (color == Line) CardColor else color,
         border = if (color == Line) BorderStroke(1.dp, Line) else null
     ) {
         Text(

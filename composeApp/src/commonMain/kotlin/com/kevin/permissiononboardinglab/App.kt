@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -190,7 +191,7 @@ private fun PermissionPreview(step: StepCopy, flow: PermissionFlowState, onActio
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -245,7 +246,7 @@ private fun PhoneMock(step: StepCopy, flow: PermissionFlowState, onAction: (Perm
         Surface(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(20.dp),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Column(
@@ -330,7 +331,7 @@ private fun SystemPrompt(step: StepCopy, onAction: (PermissionAction) -> Unit) {
                 Surface(
                     onClick = { onAction(PermissionAction.SystemDeny) },
                     shape = RoundedCornerShape(50),
-                    color = Color.White,
+                    color = CardColor,
                     border = BorderStroke(1.dp, Line)
                 ) {
                     Text(text = "Deny", fontSize = 13.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp), color = Muted, fontWeight = FontWeight.Bold)
@@ -338,7 +339,7 @@ private fun SystemPrompt(step: StepCopy, onAction: (PermissionAction) -> Unit) {
                 Surface(
                     onClick = { onAction(PermissionAction.SystemAllowSelected) },
                     shape = RoundedCornerShape(50),
-                    color = Color.White,
+                    color = CardColor,
                     border = BorderStroke(1.dp, Line)
                 ) {
                     Text(text = "Selected", fontSize = 13.sp, modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp), color = Ink, fontWeight = FontWeight.Bold)

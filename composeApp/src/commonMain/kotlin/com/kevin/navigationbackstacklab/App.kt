@@ -44,6 +44,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
@@ -52,8 +53,8 @@ import com.kevin.labs.ui.Line
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
-import com.kevin.labs.ui.swipeBetweenTabs
 import com.kevin.labs.ui.SystemBackHandler
+import com.kevin.labs.ui.swipeBetweenTabs
 
 @Composable
 fun App() {
@@ -208,7 +209,7 @@ private fun BackstackPanel(
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
+        colors = CardDefaults.elevatedCardColors(containerColor = CardColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -301,7 +302,7 @@ private fun PhoneTopBar(copy: NavCopy, nav: NavState, onBack: () -> Unit) {
                 .heightIn(min = 48.dp)
                 .alpha(if (canGoBack) 1f else 0.4f),
             shape = RoundedCornerShape(50),
-            color = Color.White,
+            color = CardColor,
             border = BorderStroke(1.dp, Line)
         ) {
             Text(
@@ -326,7 +327,7 @@ private fun DestinationCanvas(copy: NavCopy, nav: NavState) {
         Surface(
             modifier = Modifier.weight(0.9f),
             shape = RoundedCornerShape(18.dp),
-            color = Color.White
+            color = CardColor
         ) {
             Column(
                 modifier = Modifier.padding(12.dp),
@@ -346,7 +347,7 @@ private fun DestinationCanvas(copy: NavCopy, nav: NavState) {
         Surface(
             modifier = Modifier.weight(1.1f),
             shape = RoundedCornerShape(18.dp),
-            color = if (nav.modal != null) copy.accent.copy(alpha = 0.16f) else Color.White
+            color = if (nav.modal != null) copy.accent.copy(alpha = 0.16f) else CardColor
         ) {
             Column(
                 modifier = Modifier.padding(12.dp),
@@ -441,7 +442,7 @@ private fun ControlChip(
         modifier = modifier
             .heightIn(min = 48.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(if (selected) accent else Color.White)
+            .background(if (selected) accent else CardColor)
             .clickable(role = role, onClick = onClick)
             .semantics { this.selected = selected },
         contentAlignment = Alignment.Center
@@ -462,7 +463,7 @@ private fun StackRow(route: String, index: Int, isTop: Boolean, isModal: Boolean
             .fillMaxWidth()
             .height(35.dp)
             .clip(RoundedCornerShape(13.dp))
-            .background(Color.White)
+            .background(CardColor)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(9.dp)

@@ -39,7 +39,7 @@ fun RuleCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = Ink
+        color = Inverse
     ) {
         Column(
             modifier = Modifier.padding(18.dp),
@@ -65,9 +65,9 @@ fun RuleCard(
                         )
                     }
                 }
-                Text(text = title, color = Color.White, fontWeight = FontWeight.Black)
+                Text(text = title, color = OnInverse, fontWeight = FontWeight.Black)
             }
-            Text(text = rule, color = OnInkMuted, lineHeight = 22.sp)
+            Text(text = rule, color = OnInverseMuted, lineHeight = 22.sp)
         }
     }
 }
