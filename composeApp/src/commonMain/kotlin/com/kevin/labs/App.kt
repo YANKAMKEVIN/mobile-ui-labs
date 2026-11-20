@@ -68,8 +68,10 @@ import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.LabSource
 import com.kevin.labs.ui.LocalLabFooter
 import com.kevin.labs.ui.LocalLabHosted
+import com.kevin.labs.ui.LocalLabSource
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.PredictiveBackHandler
@@ -324,7 +326,8 @@ fun LabScreen(
         Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) {
             CompositionLocalProvider(
                 LocalLabHosted provides true,
-                LocalLabFooter provides { LabNeighbours(lab, onOpenLab) }
+                LocalLabFooter provides { LabNeighbours(lab, onOpenLab) },
+                LocalLabSource provides LabSource(lab.sourceUrl(), lab.mainComposable)
             ) { lab.content() }
         }
     }

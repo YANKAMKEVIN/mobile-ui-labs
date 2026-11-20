@@ -61,4 +61,14 @@ class LabsTest {
             assertEquals(position + 1 + titles, catalogItemIndex(lab.id))
         }
     }
+
+    @Test
+    fun viewCodeLeadsToTheLabPackageOnGitHub() {
+        val adaptive = labs.first { it.id == "adaptive-layout-lab" }
+        assertEquals(
+            "https://github.com/YANKAMKEVIN/mobile-ui-labs/blob/main/composeApp/src/commonMain/kotlin/com/kevin/adaptivelayoutlab/App.kt",
+            adaptive.sourceUrl()
+        )
+        assertEquals("AdaptiveLayoutLab", adaptive.mainComposable)
+    }
 }

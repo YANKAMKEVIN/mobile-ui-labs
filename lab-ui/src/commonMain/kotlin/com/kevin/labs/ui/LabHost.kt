@@ -24,3 +24,9 @@ fun LabFooter(modifier: Modifier = Modifier) {
     val footer = LocalLabFooter.current ?: return
     Box(modifier) { footer() }
 }
+
+/** Where the code of the lab on screen lives: [url] of its file, [symbol] of its main composable. */
+class LabSource(val url: String, val symbol: String)
+
+/** Source of the lab on screen, set by the app shell; [RuleCard] then offers a "View code" link. */
+val LocalLabSource = staticCompositionLocalOf<LabSource?> { null }

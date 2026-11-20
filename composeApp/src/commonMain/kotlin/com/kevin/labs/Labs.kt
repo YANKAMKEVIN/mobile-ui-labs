@@ -31,6 +31,8 @@ class Lab(
     val accent: Color,
     val vignette: Vignette,
     val group: LabGroup,
+    /** Name of the private composable that draws the lab, shown with the "View code" link. */
+    val mainComposable: String,
     val content: @Composable () -> Unit
 )
 
@@ -43,6 +45,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF0E6A59),
         vignette = Vignette.Adaptive,
         group = LabGroup.Structure,
+        mainComposable = "AdaptiveLayoutLab",
         content = { AdaptiveLayoutLab() }
     ),
     Lab(
@@ -52,6 +55,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF6B57B8),
         vignette = Vignette.Backstack,
         group = LabGroup.Structure,
+        mainComposable = "NavigationBackstackLab",
         content = { NavigationBackstackLab() }
     ),
     Lab(
@@ -61,6 +65,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFFB5532A),
         vignette = Vignette.Sheet,
         group = LabGroup.Structure,
+        mainComposable = "BottomSheetPlaybook",
         content = { BottomSheetPlaybook() }
     ),
     Lab(
@@ -70,6 +75,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFFD33F49),
         vignette = Vignette.Swipe,
         group = LabGroup.Structure,
+        mainComposable = "SwipeActionLab",
         content = { SwipeActionLab() }
     ),
     Lab(
@@ -79,6 +85,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFFB86812),
         vignette = Vignette.Feedback,
         group = LabGroup.Feedback,
+        mainComposable = "FeedbackSurfaceLab",
         content = { FeedbackSurfaceLab() }
     ),
     Lab(
@@ -88,6 +95,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF2F5DA8),
         vignette = Vignette.Loading,
         group = LabGroup.Feedback,
+        mainComposable = "LoadingGallery",
         content = { LoadingUxPatterns() }
     ),
     Lab(
@@ -97,6 +105,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF6750A4),
         vignette = Vignette.Empty,
         group = LabGroup.Feedback,
+        mainComposable = "EmptyStateGallery",
         content = { EmptyStateGallery() }
     ),
     Lab(
@@ -106,6 +115,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF245FA8),
         vignette = Vignette.Search,
         group = LabGroup.Feedback,
+        mainComposable = "SearchStateMachine",
         content = { SearchStateMachine() }
     ),
     Lab(
@@ -115,6 +125,7 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFFB76F16),
         vignette = Vignette.Offline,
         group = LabGroup.Data,
+        mainComposable = "OfflineFirstNotes",
         content = { OfflineFirstNotes() }
     ),
     Lab(
@@ -124,9 +135,17 @@ val labs: List<Lab> = listOf(
         accent = Color(0xFF0E7059),
         vignette = Vignette.Permission,
         group = LabGroup.Data,
+        mainComposable = "PermissionOnboardingLab",
         content = { PermissionOnboardingLab() }
     ),
 )
+
+/** Public repository of the series, where "View code" leads. */
+const val REPOSITORY_URL = "https://github.com/YANKAMKEVIN/mobile-ui-labs"
+
+/** The lab's source file on the default branch: each lab lives in com.kevin.<id without dashes>. */
+fun Lab.sourceUrl(): String =
+    "$REPOSITORY_URL/blob/main/composeApp/src/commonMain/kotlin/com/kevin/${id.replace("-", "")}/App.kt"
 
 /** Two-digit number of a lab in the series ("01" to "10"). */
 fun Lab.number(): String = (labs.indexOf(this) + 1).toString().padStart(2, '0')
