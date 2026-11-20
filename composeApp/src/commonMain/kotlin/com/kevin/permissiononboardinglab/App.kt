@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -183,6 +184,7 @@ private fun PermissionOnboardingLab() {
             }
         }
         item { RuleCard(title = "Decision rule", rule = selected.rule) }
+        item { LabFooter() }
     }
 }
 

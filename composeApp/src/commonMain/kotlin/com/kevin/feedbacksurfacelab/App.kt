@@ -57,6 +57,7 @@ import com.kevin.labs.ui.CardColor
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.Inverse
 import com.kevin.labs.ui.InverseAction
+import com.kevin.labs.ui.LabFooter
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTabs
 import com.kevin.labs.ui.LabTheme
@@ -215,6 +216,7 @@ private fun FeedbackSurfaceLab() {
                 }
             }
             item { RuleCard(title = "Decision rule", rule = selected.rule) }
+            item { LabFooter() }
             item { Spacer(Modifier.height(74.dp)) }
         }
 

@@ -57,6 +57,7 @@ import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.LocalLabFooter
 import com.kevin.labs.ui.LocalLabHosted
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
@@ -94,6 +95,10 @@ fun App(darkTheme: Boolean = isSystemInDarkTheme()) {
                 LabScreen(
                     lab = open,
                     onBack = { openId = null },
+                    onOpenLab = {
+                        backProgress = 0f
+                        openId = it.id
+                    },
                     backProgress = backProgress,
                     onBackProgress = { backProgress = it }
                 )
@@ -157,12 +162,14 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
 /**
  * A lab under a slim top bar: Back to the catalog and the lab title. The lab's own header then
  * shrinks to a one-line pitch ([LocalLabHosted]). System Back also returns to the catalog, and the
- * screen follows the predictive back gesture through [backProgress].
+ * screen follows the predictive back gesture through [backProgress]. The lab ends with links to
+ * the previous and next labs ([onOpenLab]).
  */
 @Composable
 fun LabScreen(
     lab: Lab,
     onBack: () -> Unit,
+    onOpenLab: (Lab) -> Unit = {},
     backProgress: Float = 0f,
     onBackProgress: (Float) -> Unit = {}
 ) {
@@ -214,7 +221,10 @@ fun LabScreen(
         }
         // The bar above already pads for the status bar: labs must not pad for it a second time.
         Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) {
-            CompositionLocalProvider(LocalLabHosted provides true) { lab.content() }
+            CompositionLocalProvider(
+                LocalLabHosted provides true,
+                LocalLabFooter provides { LabNeighbours(lab, onOpenLab) }
+            ) { lab.content() }
         }
     }
 }
