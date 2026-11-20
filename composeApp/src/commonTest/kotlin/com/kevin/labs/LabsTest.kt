@@ -29,4 +29,12 @@ class LabsTest {
         assertEquals(labs[labs.size - 2] to null, neighbours(labs.last().id))
         assertEquals(null to null, neighbours("unknown"))
     }
+
+    @Test
+    fun catalogTurnsIntoAGridOnWideWindows() {
+        assertEquals(1, catalogColumns(412f))
+        assertEquals(2, catalogColumns(600f))
+        assertEquals(2, catalogColumns(839f))
+        assertEquals(3, catalogColumns(1280f))
+    }
 }

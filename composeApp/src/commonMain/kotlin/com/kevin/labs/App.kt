@@ -11,11 +11,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -24,8 +26,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -112,23 +117,44 @@ internal fun labOrder(id: String?): Int = labs.indexOfFirst { it.id == id }
 
 @Composable
 fun Catalog(onOpen: (Lab) -> Unit) {
-    LazyColumn(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        contentAlignment = Alignment.TopCenter
     ) {
-        item {
-            LabHeader(
-                title = "Mobile UI Labs",
-                subtitle = "Ten small Compose Multiplatform labs, one UX decision each.",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+        // One column on phones, a grid on tablets and in landscape, never wider than is readable.
+        val columns = catalogColumns(maxWidth.value)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(columns),
+            modifier = Modifier
+                .fillMaxHeight()
+                .widthIn(max = MAX_CATALOG_WIDTH.dp),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                LabHeader(
+                    title = "Mobile UI Labs",
+                    subtitle = "Ten small Compose Multiplatform labs, one UX decision each.",
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+            items(labs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
         }
-        items(labs, key = { it.id }) { lab -> LabRow(lab, onClick = { onOpen(lab) }) }
     }
+}
+
+/** Widest the catalog grows; beyond, it stays centred with paper on both sides. */
+internal const val MAX_CATALOG_WIDTH = 1080
+
+/** Catalog columns for a window [widthDp] wide: 1 under 600 dp, 2 under 840 dp, 3 beyond. */
+internal fun catalogColumns(widthDp: Float): Int = when {
+    widthDp < 600f -> 1
+    widthDp < 840f -> 2
+    else -> 3
 }
 
 @Composable
