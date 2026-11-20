@@ -70,6 +70,10 @@ import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "What should a screen say when it has nothing to show? Compare first run, no results, offline, permission and error."
+
 @Composable
 fun App() {
     LabTheme(primary = Color(0xFF1B5E4A), secondary = Color(0xFF6750A4)) {
@@ -193,7 +197,7 @@ private fun EmptyStateGallery() {
         item {
             LabHeader(
                 title = "Empty State Gallery",
-                subtitle = "Five tiny UI patterns for moments where the screen has no content."
+                subtitle = PITCH
             )
         }
         item {

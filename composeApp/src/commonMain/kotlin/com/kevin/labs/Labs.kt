@@ -3,15 +3,25 @@ package com.kevin.labs
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.kevin.adaptivelayoutlab.App as AdaptiveLayoutLab
+import com.kevin.adaptivelayoutlab.PITCH as AdaptiveLayoutPitch
 import com.kevin.bottomsheetplaybook.App as BottomSheetPlaybook
+import com.kevin.bottomsheetplaybook.PITCH as BottomSheetPitch
 import com.kevin.emptystategallery.App as EmptyStateGallery
+import com.kevin.emptystategallery.PITCH as EmptyStatePitch
 import com.kevin.feedbacksurfacelab.App as FeedbackSurfaceLab
+import com.kevin.feedbacksurfacelab.PITCH as FeedbackSurfacePitch
 import com.kevin.loadinguxpatterns.App as LoadingUxPatterns
+import com.kevin.loadinguxpatterns.PITCH as LoadingPitch
 import com.kevin.navigationbackstacklab.App as NavigationBackstackLab
+import com.kevin.navigationbackstacklab.PITCH as NavigationPitch
 import com.kevin.offlinefirstnotes.App as OfflineFirstNotes
+import com.kevin.offlinefirstnotes.PITCH as OfflineFirstPitch
 import com.kevin.permissiononboardinglab.App as PermissionOnboardingLab
+import com.kevin.permissiononboardinglab.PITCH as PermissionPitch
 import com.kevin.searchstatemachine.App as SearchStateMachine
+import com.kevin.searchstatemachine.PITCH as SearchPitch
 import com.kevin.swipeactionlab.App as SwipeActionLab
+import com.kevin.swipeactionlab.PITCH as SwipePitch
 
 /** The three themes the catalog is grouped under, in order. */
 enum class LabGroup(val title: String) {
@@ -41,7 +51,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "adaptive-layout-lab",
         title = "Adaptive Layout Lab",
-        summary = "Change hierarchy, not just width: compact, medium, expanded, foldable, dense.",
+        summary = AdaptiveLayoutPitch,
         accent = Color(0xFF0E6A59),
         vignette = Vignette.Adaptive,
         group = LabGroup.Structure,
@@ -51,7 +61,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "navigation-backstack-lab",
         title = "Navigation Backstack Lab",
-        summary = "A real back stack: tabs, nested routes, modal layer, deep links and Back.",
+        summary = NavigationPitch,
         accent = Color(0xFF6B57B8),
         vignette = Vignette.Backstack,
         group = LabGroup.Structure,
@@ -61,7 +71,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "bottom-sheet-playbook",
         title = "Bottom Sheet Playbook",
-        summary = "Pick the right sheet for confirm, filters, peek, forms and actions.",
+        summary = BottomSheetPitch,
         accent = Color(0xFFB5532A),
         vignette = Vignette.Sheet,
         group = LabGroup.Structure,
@@ -71,7 +81,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "swipe-action-lab",
         title = "Swipe Action Lab",
-        summary = "Swipe actions that scroll, resolve and undo, without accidental triggers.",
+        summary = SwipePitch,
         accent = Color(0xFFD33F49),
         vignette = Vignette.Swipe,
         group = LabGroup.Structure,
@@ -81,7 +91,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "feedback-surface-lab",
         title = "Feedback Surface Lab",
-        summary = "Snackbar, undo, inline error, banner or blocking dialog: where feedback lives.",
+        summary = FeedbackSurfacePitch,
         accent = Color(0xFFB86812),
         vignette = Vignette.Feedback,
         group = LabGroup.Feedback,
@@ -91,7 +101,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "loading-ux-patterns",
         title = "Loading UX Patterns",
-        summary = "Inline spinner, skeleton, steps, optimistic UI: progress after an action.",
+        summary = LoadingPitch,
         accent = Color(0xFF2F5DA8),
         vignette = Vignette.Loading,
         group = LabGroup.Feedback,
@@ -101,7 +111,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "empty-state-gallery",
         title = "Empty State Gallery",
-        summary = "First use, no results, offline, permission, error: what to say and do.",
+        summary = EmptyStatePitch,
         accent = Color(0xFF6750A4),
         vignette = Vignette.Empty,
         group = LabGroup.Feedback,
@@ -111,7 +121,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "search-state-machine",
         title = "Search State Machine",
-        summary = "A tested reducer: debounce, loading, results, empty, error and retry.",
+        summary = SearchPitch,
         accent = Color(0xFF245FA8),
         vignette = Vignette.Search,
         group = LabGroup.Feedback,
@@ -121,7 +131,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "offline-first-notes",
         title = "Offline First Notes",
-        summary = "Local-first writing, sync queue, background progress and conflicts.",
+        summary = OfflineFirstPitch,
         accent = Color(0xFFB76F16),
         vignette = Vignette.Offline,
         group = LabGroup.Data,
@@ -131,7 +141,7 @@ val labs: List<Lab> = listOf(
     Lab(
         id = "permission-onboarding-lab",
         title = "Permission Onboarding Lab",
-        summary = "Ask with context, handle denial, limited access and the Settings detour.",
+        summary = PermissionPitch,
         accent = Color(0xFF0E7059),
         vignette = Vignette.Permission,
         group = LabGroup.Data,

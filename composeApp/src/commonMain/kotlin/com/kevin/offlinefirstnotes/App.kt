@@ -50,6 +50,10 @@ import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "How does writing stay safe without a network? Compare online, offline, sync queue, background sync and conflict."
+
 @Composable
 fun App() {
     LabTheme(primary = Green, secondary = Blue) {
@@ -139,7 +143,7 @@ private fun OfflineFirstNotes() {
         item {
             LabHeader(
                 title = "Offline First Notes",
-                subtitle = "A Compose lab for local-first writing, sync queues, background progress and conflict recovery.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }

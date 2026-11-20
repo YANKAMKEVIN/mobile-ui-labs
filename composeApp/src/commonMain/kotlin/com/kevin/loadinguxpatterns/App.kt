@@ -66,6 +66,10 @@ import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "How should progress show after an action? Compare in-button, overlay, skeleton, optimistic and step by step."
+
 @Composable
 fun App() {
     LabTheme(primary = Color(0xFF0E6251), secondary = Color(0xFFB26A00)) {
@@ -166,7 +170,7 @@ private fun LoadingGallery() {
         item {
             LabHeader(
                 title = "Loading UX Patterns",
-                subtitle = "Five ways to show progress after an interaction, from tiny actions to longer flows."
+                subtitle = PITCH
             )
         }
         item {

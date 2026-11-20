@@ -57,6 +57,10 @@ import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.SystemBackHandler
 import com.kevin.labs.ui.swipeBetweenTabs
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "Where should Back take the user? Compare tabs, detail, modal, deep link and Back on a real back stack."
+
 @Composable
 fun App() {
     LabTheme(primary = Blue, secondary = Green) {
@@ -163,7 +167,7 @@ private fun NavigationBackstackLab() {
         item {
             LabHeader(
                 title = "Navigation Backstack Lab",
-                subtitle = "A Compose/KMP lab for visualizing routes, nested flows, modal layers, deep links and Android Back.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }

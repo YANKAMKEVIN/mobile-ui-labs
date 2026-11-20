@@ -68,6 +68,10 @@ import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When is a bottom sheet the right surface? Compare confirm, filters, peek, short form and actions."
+
 @Composable
 fun App() {
     LabTheme(primary = InkGreen, secondary = Clay) {
@@ -163,7 +167,7 @@ private fun BottomSheetPlaybook() {
             item {
                 LabHeader(
                     title = "Bottom Sheet Playbook",
-                    subtitle = "A compact UI lab for choosing the right sheet pattern without turning every task into a hidden page."
+                    subtitle = PITCH
                 )
             }
             item {

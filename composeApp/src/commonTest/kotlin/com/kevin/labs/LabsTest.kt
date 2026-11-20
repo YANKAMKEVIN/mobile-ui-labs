@@ -71,4 +71,9 @@ class LabsTest {
         )
         assertEquals("AdaptiveLayoutLab", adaptive.mainComposable)
     }
+
+    @Test
+    fun everyPitchAsksItsQuestionThenSaysWhatIsCompared() {
+        labs.forEach { assertTrue("? Compare " in it.summary, it.id) }
+    }
 }

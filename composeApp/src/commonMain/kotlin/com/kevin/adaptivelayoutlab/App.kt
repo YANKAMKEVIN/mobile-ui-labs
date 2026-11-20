@@ -57,6 +57,10 @@ import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlin.math.roundToInt
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When should a layout change its hierarchy, not just stretch? Compare compact, medium, expanded, foldable and dense."
+
 @Composable
 fun App() {
     LabTheme(primary = Green, secondary = Blue) {
@@ -154,7 +158,7 @@ private fun AdaptiveLayoutLab() {
         item {
             LabHeader(
                 title = "Adaptive Layout Lab",
-                subtitle = "A Compose playground for changing hierarchy across compact, wide and foldable surfaces.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }

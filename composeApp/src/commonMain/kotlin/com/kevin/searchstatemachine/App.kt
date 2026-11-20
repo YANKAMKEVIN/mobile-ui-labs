@@ -63,6 +63,10 @@ import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.delay
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "What should search show at every moment? Compare idle, suggestions, loading, results, empty and error, driven by a tested reducer."
+
 @Composable
 fun App() {
     LabTheme(primary = Blue, secondary = Green) {
@@ -197,7 +201,7 @@ private fun SearchStateMachine() {
         item {
             LabHeader(
                 title = "Search State Machine",
-                subtitle = "A Compose lab for designing search as a flow: intent, feedback, result quality and recovery.",
+                subtitle = PITCH,
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
         }

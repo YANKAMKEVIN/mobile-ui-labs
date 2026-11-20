@@ -83,6 +83,10 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When should a swipe trigger an action? Compare archive, pin, mute, delete and complete, with undo and safe thresholds."
+
 @Composable
 fun App() {
     LabTheme(primary = Green, secondary = Ochre) {
@@ -184,7 +188,7 @@ private fun SwipeActionLab() {
             item {
                 LabHeader(
                     title = "Swipe Action Lab",
-                    subtitle = "A Compose experiment for making swipe actions discoverable, reversible and hard to trigger by accident."
+                    subtitle = PITCH
                 )
             }
             item {

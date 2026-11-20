@@ -70,6 +70,10 @@ import com.kevin.labs.ui.StatusDot
 import com.kevin.labs.ui.swipeBetweenTabs
 import kotlinx.coroutines.launch
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "Where should feedback live after an action? Compare inline error, snackbar, banner, undo and blocking dialog."
+
 @Composable
 fun App() {
     LabTheme(primary = Pine, secondary = Amber) {
@@ -188,7 +192,7 @@ private fun FeedbackSurfaceLab() {
             item {
                 LabHeader(
                     title = "Feedback Surface Lab",
-                    subtitle = "A product-minded Compose lab for choosing where feedback should live after an interaction."
+                    subtitle = PITCH
                 )
             }
             item {

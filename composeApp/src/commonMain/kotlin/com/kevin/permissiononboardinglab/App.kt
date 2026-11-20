@@ -59,6 +59,10 @@ import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
 
+/** The UX question this lab asks; also its summary on the catalog. */
+internal const val PITCH =
+    "When and how should an app ask for access? Compare value first, rationale, prompt, denial, limited access and Settings."
+
 @Composable
 fun App() {
     LabTheme(primary = Teal, secondary = Gold) {
@@ -161,7 +165,7 @@ private fun PermissionOnboardingLab() {
         item {
             LabHeader(
                 title = "Permission Onboarding Lab",
-                subtitle = "A Compose flow for asking access with context, fallback and trust instead of surprise."
+                subtitle = PITCH
             )
         }
         item {
