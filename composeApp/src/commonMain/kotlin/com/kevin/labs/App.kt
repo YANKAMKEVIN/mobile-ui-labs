@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,9 +24,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,16 +36,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.Ink
 import com.kevin.labs.ui.LabHeader
 import com.kevin.labs.ui.LabTheme
 import com.kevin.labs.ui.Line
+import com.kevin.labs.ui.LocalLabHosted
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.SystemBackHandler
@@ -108,7 +114,10 @@ private fun LabRow(lab: Lab, onClick: () -> Unit) {
     }
 }
 
-/** A lab with a slim "All labs" bar on top; system Back also returns to the catalog. */
+/**
+ * A lab under a slim top bar: Back to the catalog and the lab title. The lab's own header then
+ * shrinks to a one-line pitch ([LocalLabHosted]). System Back also returns to the catalog.
+ */
 @Composable
 fun LabScreen(lab: Lab, onBack: () -> Unit) {
     SystemBackHandler(enabled = true, onBack = onBack)
@@ -118,30 +127,30 @@ fun LabScreen(lab: Lab, onBack: () -> Unit) {
                 .fillMaxWidth()
                 .background(Paper)
                 .statusBarsPadding()
-                .padding(horizontal = 8.dp),
+                .padding(start = 4.dp, end = 16.dp)
+                .heightIn(min = 56.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(
-                onClick = onBack,
-                modifier = Modifier.heightIn(min = 48.dp).semantics { this.role = Role.Button },
-                shape = RoundedCornerShape(50),
-                color = Color.Transparent
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = Ink,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text("All labs", color = Ink, fontWeight = FontWeight.Bold)
-                }
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "All labs",
+                    tint = Ink
+                )
             }
+            Text(
+                text = lab.title,
+                modifier = Modifier.weight(1f).semantics { heading() },
+                color = Ink,
+                fontWeight = FontWeight.Black,
+                fontSize = 20.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
-        Box(Modifier.weight(1f)) { lab.content() }
+        // The bar above already pads for the status bar: labs must not pad for it a second time.
+        Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) {
+            CompositionLocalProvider(LocalLabHosted provides true) { lab.content() }
+        }
     }
 }
