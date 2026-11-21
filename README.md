@@ -129,7 +129,7 @@ appelle `./gradlew :composeApp:embedAndSignAppleFrameworkForXcode`. Renseigner `
 `iosApp/Configuration/Config.xcconfig` pour un appareil réel.
 
 La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests des deux modules à chaque push sur
-`main` et à chaque pull request. Un second job compile sur Linux les klibs Kotlin/Native iOS des deux modules
+`main` ou sur une branche `claude/**`, et à chaque pull request. Un second job compile sur Linux les klibs Kotlin/Native iOS des deux modules
 (iosArm64, iosSimulatorArm64, iosX64) : sans édition de liens du framework ni xcodebuild, qui demandent un Mac.
 
 ## Licence
