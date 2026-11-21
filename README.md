@@ -68,8 +68,10 @@ couvert par `BackstackTest`.
 ### Offline First Notes
 
 Offline-first est une promesse produit : la note est déjà en sécurité, on voit ce qui reste à synchroniser, on peut
-continuer à écrire, et un conflit se résout avec son contexte. Les cinq états (en ligne, hors ligne, file d'attente,
-synchronisation, conflit) sont pour l'instant des maquettes, sans vraie file ni persistance.
+continuer à écrire, et un conflit se résout avec son contexte. La note est jouable : écrire une ligne l'enregistre
+sur l'appareil et la met en file, « Go offline » coupe le réseau sans bloquer l'écriture, « Sync now » pousse la file
+vers un serveur simulé, et une modification faite « sur un autre appareil » provoque un conflit à résoudre (garder la
+mienne, la leur, ou les deux). Reducer pur couvert par `NotesSyncTest` ; rien n'est persisté.
 
 <p align="center"><img src="images/offline-first-notes.png" alt="Offline First Notes" width="260" /></p>
 
