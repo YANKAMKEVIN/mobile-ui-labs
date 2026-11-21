@@ -78,6 +78,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.OnInverse
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.StatusDot
+import com.kevin.labs.ui.asText
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
@@ -385,7 +386,7 @@ private fun SwipeCard(
                 modifier = Modifier.alpha(actionAlpha)
             ) {
                 ActionGlyph(pattern)
-                Text(pattern.title, color = pattern.accent, fontWeight = FontWeight.Black)
+                Text(pattern.title, color = pattern.accent.asText, fontWeight = FontWeight.Black)
             }
         }
         Surface(
@@ -449,7 +450,7 @@ private fun SwipeCard(
                     )
                     Text(
                         text = if (progress >= 1f) "Release to commit" else "Threshold ${(progress * 100).roundToInt()}%",
-                        color = pattern.accent,
+                        color = pattern.accent.asText,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Black
                     )

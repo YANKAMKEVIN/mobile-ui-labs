@@ -64,6 +64,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.delay
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -319,7 +320,7 @@ private fun PatternIllustration(
                     } else {
                         Text(
                             text = pattern.mark,
-                            color = pattern.accent,
+                            color = pattern.accent.asText,
                             fontWeight = FontWeight.Black,
                             fontSize = 28.sp
                         )

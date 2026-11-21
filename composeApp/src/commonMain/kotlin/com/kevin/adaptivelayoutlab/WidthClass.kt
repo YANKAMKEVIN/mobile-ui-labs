@@ -34,3 +34,10 @@ internal fun previewFraction(widthDp: Float): Float {
     val t = (widthDp - MIN_PREVIEW_WIDTH) / (MAX_PREVIEW_WIDTH - MIN_PREVIEW_WIDTH)
     return 0.5f + 0.5f * t.coerceIn(0f, 1f)
 }
+
+/**
+ * Width given to the simulated window when it follows the real one: the real width, kept inside
+ * the slider's range (a phone narrower than 320 dp shows as 320, a desktop wider than 1200 as 1200).
+ * The width class shown next to the switch is the real one, unclamped.
+ */
+internal fun followedWidth(realWidthDp: Float): Float = realWidthDp.coerceIn(MIN_PREVIEW_WIDTH, MAX_PREVIEW_WIDTH)

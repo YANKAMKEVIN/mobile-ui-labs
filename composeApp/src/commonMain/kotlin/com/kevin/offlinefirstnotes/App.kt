@@ -9,11 +9,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,21 +26,26 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.CardColor
@@ -49,6 +59,8 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
+import kotlinx.coroutines.delay
 
 /** The UX question this lab asks; also its summary on the catalog. */
 internal const val PITCH =
@@ -59,14 +71,6 @@ fun App() {
     LabTheme(primary = Green, secondary = Blue) {
         OfflineFirstNotes()
     }
-}
-
-private enum class SyncMode {
-    Online,
-    Offline,
-    Queue,
-    Syncing,
-    Conflict
 }
 
 private data class SyncCopy(
@@ -127,10 +131,24 @@ private val modes = listOf(
     )
 )
 
+/** How long the simulated server takes to answer a push. */
+private const val PUSH_MILLIS = 1200L
+
 @Composable
 private fun OfflineFirstNotes() {
-    var selectedIndex by rememberSaveable { mutableStateOf(2) }
+    // The tab follows the state of the note: writing, the network switch and sync move it.
+    var notes by remember { mutableStateOf(preset(SyncMode.Queue)) }
+    val onAction: (NotesAction) -> Unit = { notes = reduce(notes, it) }
+    val selectedIndex = modes.indexOfFirst { it.mode == notes.mode }
     val selected = modes[selectedIndex]
+    val selectMode: (Int) -> Unit = { onAction(NotesAction.JumpTo(modes[it].mode)) }
+
+    LaunchedEffect(notes.syncing) {
+        if (notes.syncing) {
+            delay(PUSH_MILLIS)
+            onAction(NotesAction.PushFinished)
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -153,7 +171,7 @@ private fun OfflineFirstNotes() {
                 label = { it.tab },
                 accent = { it.accent },
                 selectedIndex = selectedIndex,
-                onSelected = { selectedIndex = it },
+                onSelected = selectMode,
                 modifier = Modifier.padding(start = 20.dp),
                 compact = true
             )
@@ -161,12 +179,14 @@ private fun OfflineFirstNotes() {
         item {
             AnimatedContent(
                 targetState = selected,
-                modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size) { selectedIndex = it },
+                modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size, selectMode),
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "sync-mode"
             ) { copy ->
                 NotesPanel(
                     copy = copy,
+                    notes = notes,
+                    onAction = onAction,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
@@ -184,7 +204,12 @@ private fun OfflineFirstNotes() {
 }
 
 @Composable
-private fun NotesPanel(copy: SyncCopy, modifier: Modifier = Modifier) {
+private fun NotesPanel(
+    copy: SyncCopy,
+    notes: NotesState,
+    onAction: (NotesAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -195,8 +220,9 @@ private fun NotesPanel(copy: SyncCopy, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            NoteEditor(copy)
-            SyncTimeline(copy)
+            NoteEditor(copy, notes)
+            NotesActions(copy, notes, onAction)
+            SyncTimeline(copy, notes)
             Text(
                 text = copy.title,
                 color = Ink,
@@ -214,7 +240,7 @@ private fun NotesPanel(copy: SyncCopy, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun NoteEditor(copy: SyncCopy) {
+private fun NoteEditor(copy: SyncCopy, notes: NotesState) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -238,7 +264,7 @@ private fun NoteEditor(copy: SyncCopy) {
                         fontSize = 20.sp
                     )
                     Text(
-                        text = statusText(copy.mode),
+                        text = statusText(notes),
                         color = Muted,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
@@ -252,14 +278,14 @@ private fun NoteEditor(copy: SyncCopy) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                         text = if (copy.mode == SyncMode.Offline) "Local" else "Saved",
-                        color = if (copy.mode == SyncMode.Offline) Color.White else Green,
+                        color = if (copy.mode == SyncMode.Offline) Color.White else Green.asText,
                         fontWeight = FontWeight.Black,
                         fontSize = 12.sp
                     )
                 }
             }
             Text(
-                text = "Museum list, quiet cafe, evening walk near the river. Add receipts later.",
+                text = notes.local,
                 color = Ink,
                 lineHeight = 22.sp
             )
@@ -277,12 +303,56 @@ private fun NoteEditor(copy: SyncCopy) {
     }
 }
 
+/** What the user can do to the note in this state; every button feeds the reducer. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SyncTimeline(copy: SyncCopy) {
+private fun NotesActions(copy: SyncCopy, notes: NotesState, onAction: (NotesAction) -> Unit) {
+    val buttonColors = ButtonDefaults.buttonColors(containerColor = copy.accent, contentColor = Color.White)
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (notes.conflict != null) {
+            Button(onClick = { onAction(NotesAction.Resolve(Resolution.KeepBoth)) }, colors = buttonColors) {
+                Text("Keep both", fontWeight = FontWeight.Bold)
+            }
+            OutlinedButton(onClick = { onAction(NotesAction.Resolve(Resolution.KeepMine)) }) {
+                Text("Keep mine", color = Ink)
+            }
+            OutlinedButton(onClick = { onAction(NotesAction.Resolve(Resolution.KeepTheirs)) }) {
+                Text("Keep theirs", color = Ink)
+            }
+        } else {
+            Button(
+                onClick = { onAction(NotesAction.Write(nextLine(notes.local, LOCAL_LINES))) },
+                colors = buttonColors
+            ) {
+                Text("Write a line", fontWeight = FontWeight.Bold)
+            }
+            OutlinedButton(onClick = { onAction(if (notes.online) NotesAction.GoOffline else NotesAction.GoOnline) }) {
+                Text(if (notes.online) "Go offline" else "Go online", color = Ink)
+            }
+            if (notes.canSync) {
+                OutlinedButton(onClick = { onAction(NotesAction.SyncNow) }) {
+                    Text("Sync now", color = Ink)
+                }
+            }
+            OutlinedButton(
+                onClick = { onAction(NotesAction.RemoteWrite(nextLine(notes.remote, REMOTE_LINES))) }
+            ) {
+                Text("Edit on another device", color = Ink)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SyncTimeline(copy: SyncCopy, notes: NotesState) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(234.dp),
+            .heightIn(min = 234.dp),
         shape = RoundedCornerShape(22.dp),
         color = Paper,
         border = BorderStroke(1.dp, Line)
@@ -292,10 +362,11 @@ private fun SyncTimeline(copy: SyncCopy) {
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             TimelineRow("Local write", "instant", Green, active = true)
-            TimelineRow("Queue update", "2 pending", copy.accent, active = copy.mode != SyncMode.Online)
+            TimelineRow("Queue update", "${notes.pending.size} pending", copy.accent, active = notes.pending.isNotEmpty())
             TimelineRow("Push remote", syncLabel(copy.mode), copy.accent, active = copy.mode == SyncMode.Syncing)
-            if (copy.mode == SyncMode.Conflict) {
-                ConflictBox(copy.accent)
+            val conflict = notes.conflict
+            if (conflict != null) {
+                ConflictBox(conflict, copy.accent)
             } else {
                 TimelineRow("Confirm", confirmLabel(copy.mode), Line, active = copy.mode == SyncMode.Online)
             }
@@ -337,18 +408,19 @@ private fun TimelineRow(label: String, meta: String, color: Color, active: Boole
 }
 
 @Composable
-private fun ConflictBox(accent: Color) {
+private fun ConflictBox(conflict: Conflict, accent: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(74.dp)
+            .height(IntrinsicSize.Min)
+            .heightIn(min = 74.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(CardColor)
             .padding(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        VersionCard("Local", "Cafe note", accent, Modifier.weight(1f))
-        VersionCard("Remote", "Train note", Line, Modifier.weight(1f))
+        VersionCard("Mine", onlyIn(conflict.local, conflict.remote), accent, Modifier.weight(1f))
+        VersionCard("Theirs", onlyIn(conflict.remote, conflict.local), Line, Modifier.weight(1f))
     }
 }
 
@@ -356,14 +428,22 @@ private fun ConflictBox(accent: Color) {
 private fun VersionCard(label: String, detail: String, color: Color, modifier: Modifier) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxHeight()
             .clip(RoundedCornerShape(12.dp))
             .background(color.copy(alpha = if (color == Line) 0.45f else 0.16f))
             .padding(9.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(label, color = Ink, fontWeight = FontWeight.Black, fontSize = 12.sp)
-        Text(detail, color = Muted, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+        Text(
+            text = detail,
+            color = Muted,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -391,18 +471,26 @@ private fun SyncBadge(copy: SyncCopy) {
     }
 }
 
-private fun statusText(mode: SyncMode): String =
-    when (mode) {
+private fun statusText(notes: NotesState): String =
+    when (notes.mode) {
         SyncMode.Online -> "Online, saved locally first"
         SyncMode.Offline -> "Offline, safe on device"
-        SyncMode.Queue -> "Queued for background sync"
-        SyncMode.Syncing -> "Syncing in background"
+        SyncMode.Queue -> "${changes(notes.pending.size)} queued for background sync"
+        SyncMode.Syncing -> "Syncing ${changes(notes.pending.size)} in background"
         SyncMode.Conflict -> "Conflict needs review"
     }
 
+private fun changes(count: Int): String = if (count == 1) "1 change" else "$count changes"
+
+/** The first line of [version] that [other] does not have, to tell the two versions apart. */
+private fun onlyIn(version: String, other: String): String {
+    val otherLines = other.lines()
+    return version.lines().firstOrNull { it !in otherLines } ?: "No new line"
+}
+
 private fun syncLabel(mode: SyncMode): String =
     when (mode) {
-        SyncMode.Syncing -> "48%"
+        SyncMode.Syncing -> "sending"
         SyncMode.Conflict -> "blocked"
         SyncMode.Offline -> "waiting"
         SyncMode.Queue -> "ready"

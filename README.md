@@ -10,7 +10,7 @@ chaque lab compare plusieurs patterns côte à côte, avec des onglets pour pass
 d'accueil qui les liste.
 
 <p align="center">
-  <img src="images/catalog.png" alt="Écran d'accueil listant les dix labs" width="260" />
+  <img src="images/catalog.png" alt="Écran d'accueil : les labs numérotés et groupés par thème" width="260" />
 </p>
 
 ## Les labs
@@ -20,8 +20,9 @@ d'accueil qui les liste.
 Un layout adaptatif n'est pas une grille qui s'étire : c'est une décision de hiérarchie. Le lab montre la même
 expérience en compact (navigation basse), medium (rail), expanded (liste + détail), pliable (séparation physique)
 et dense. Les cinq dispositions sont des maquettes commentées ; un curseur de largeur fait basculer la maquette
-de la navigation basse au rail puis à liste + détail aux seuils de 600 et 840 dp. Ce n'est pas encore un vrai
-layout qui réagit à la taille de la fenêtre.
+de la navigation basse au rail puis à liste + détail aux seuils de 600 et 840 dp. L'interrupteur « Follow this
+window » lui donne la largeur réelle de la fenêtre et la suit (rotation, écran partagé, pliage) ; les maquettes
+elles-mêmes restent des dessins, pas des écrans d'app.
 
 <p align="center"><img src="images/adaptive-layout-lab.png" alt="Adaptive Layout Lab" width="260" /></p>
 
@@ -68,8 +69,10 @@ couvert par `BackstackTest`.
 ### Offline First Notes
 
 Offline-first est une promesse produit : la note est déjà en sécurité, on voit ce qui reste à synchroniser, on peut
-continuer à écrire, et un conflit se résout avec son contexte. Les cinq états (en ligne, hors ligne, file d'attente,
-synchronisation, conflit) sont pour l'instant des maquettes, sans vraie file ni persistance.
+continuer à écrire, et un conflit se résout avec son contexte. La note est jouable : écrire une ligne l'enregistre
+sur l'appareil et la met en file, « Go offline » coupe le réseau sans bloquer l'écriture, « Sync now » pousse la file
+vers un serveur simulé, et une modification faite « sur un autre appareil » provoque un conflit à résoudre (garder la
+mienne, la leur, ou les deux). Reducer pur couvert par `NotesSyncTest` ; rien n'est persisté.
 
 <p align="center"><img src="images/offline-first-notes.png" alt="Offline First Notes" width="260" /></p>
 
@@ -116,7 +119,8 @@ Prérequis : JDK 17+ et un SDK Android (`ANDROID_HOME`).
 ```bash
 ./gradlew :composeApp:assembleDebug          # APK Android : composeApp/build/outputs/apk/debug/
 ./gradlew :composeApp:installDebug           # sur un appareil ou un émulateur connecté
-./gradlew :composeApp:testDebugUnitTest      # tests commonTest (backstack, permission, recherche)
+./gradlew :composeApp:testDebugUnitTest      # tests commonTest des labs et du catalogue
+./gradlew :lab-ui:testDebugUnitTest          # tests du style commun (onglets, contraste des accents)
 ./gradlew :composeApp:compileKotlinIosArm64  # vérifie le code Kotlin iOS, même sans Mac
 ```
 
@@ -124,9 +128,10 @@ iOS : ouvrir `iosApp/iosApp.xcodeproj` dans Xcode (sur macOS) et lancer la cible
 appelle `./gradlew :composeApp:embedAndSignAppleFrameworkForXcode`. Renseigner `TEAM_ID` dans
 `iosApp/Configuration/Config.xcconfig` pour un appareil réel.
 
-La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests à chaque push et pull request.
+La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests des deux modules à chaque push sur
+`main` ou sur une branche `claude/**`, et à chaque pull request. Un second job compile sur Linux les klibs Kotlin/Native iOS des deux modules
+(iosArm64, iosSimulatorArm64, iosX64) : sans édition de liens du framework ni xcodebuild, qui demandent un Mac.
 
 ## Licence
 
-Aucune licence n'est fournie pour l'instant (choix de l'auteur) : sans licence explicite, le code reste
-« tous droits réservés ».
+Code distribué sous licence MIT, © 2026 Kevin Yankam : voir [LICENSE](LICENSE).

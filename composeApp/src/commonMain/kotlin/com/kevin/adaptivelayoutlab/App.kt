@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,14 +22,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -142,70 +148,89 @@ private fun AdaptiveLayoutLab() {
     // Width of the simulated window. Dragging it switches the tab at each threshold; picking a
     // size tab moves it to a typical width for that class.
     var windowWidth by rememberSaveable { mutableFloatStateOf(typicalWidth(WidthClass.Expanded)) }
+    // When on, the simulated window takes the width of the real one and follows it (rotation,
+    // split screen, folding). Moving the slider or picking a tab by hand turns it off.
+    var followWindow by rememberSaveable { mutableStateOf(false) }
+    val applyWidth: (Float) -> Unit = { width ->
+        windowWidth = width
+        val mode = LayoutMode.entries.first { it.widthClass == widthClassOf(width) }
+        selectedIndex = modes.indexOfFirst { it.mode == mode }
+    }
     val selectMode: (Int) -> Unit = { index ->
         selectedIndex = index
+        followWindow = false
         modes[index].mode.widthClass?.let { windowWidth = typicalWidth(it) }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(top = 14.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
-            LabHeader(
-                title = "Adaptive Layout Lab",
-                subtitle = PITCH,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
+    // The lab fills the app window, so its own width is the window width.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val realWidth = maxWidth.value
+        LaunchedEffect(followWindow, realWidth) {
+            if (followWindow) applyWidth(followedWidth(realWidth))
         }
-        item {
-            LabTabs(
-                items = modes,
-                label = { it.tab },
-                accent = { it.accent },
-                selectedIndex = selectedIndex,
-                onSelected = selectMode,
-                modifier = Modifier.padding(start = 20.dp)
-            )
-        }
-        item {
-            AnimatedContent(
-                targetState = selected,
-                modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size, selectMode),
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                label = "layout-mode"
-            ) { mode ->
-                LayoutPreview(
-                    copy = mode,
-                    windowFraction = if (mode.mode.widthClass != null) previewFraction(windowWidth) else 1f,
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(top = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                LabHeader(
+                    title = "Adaptive Layout Lab",
+                    subtitle = PITCH,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
+            item {
+                LabTabs(
+                    items = modes,
+                    label = { it.tab },
+                    accent = { it.accent },
+                    selectedIndex = selectedIndex,
+                    onSelected = selectMode,
+                    modifier = Modifier.padding(start = 20.dp)
+                )
+            }
+            item {
+                AnimatedContent(
+                    targetState = selected,
+                    modifier = Modifier.swipeBetweenTabs(selectedIndex, modes.size, selectMode),
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "layout-mode"
+                ) { mode ->
+                    LayoutPreview(
+                        copy = mode,
+                        windowFraction = if (mode.mode.widthClass != null) previewFraction(windowWidth) else 1f,
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    )
+                }
+            }
+            item {
+                WidthControl(
+                    widthDp = windowWidth,
+                    onWidthChange = { width ->
+                        followWindow = false
+                        applyWidth(width)
+                    },
+                    realWidthDp = realWidth,
+                    followWindow = followWindow,
+                    onFollowWindowChange = { followWindow = it },
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+            }
+            item {
+                RuleCard(
+                    rule = selected.rule,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    accent = selected.accent
+                )
+            }
+            item { LabFooter(Modifier.padding(horizontal = 20.dp)) }
+            item { Spacer(modifier = Modifier.height(2.dp)) }
         }
-        item {
-            WidthControl(
-                widthDp = windowWidth,
-                onWidthChange = { width ->
-                    windowWidth = width
-                    val mode = LayoutMode.entries.first { it.widthClass == widthClassOf(width) }
-                    selectedIndex = modes.indexOfFirst { it.mode == mode }
-                },
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-        }
-        item {
-            RuleCard(
-                rule = selected.rule,
-                modifier = Modifier.padding(horizontal = 20.dp),
-                accent = selected.accent
-            )
-        }
-        item { LabFooter(Modifier.padding(horizontal = 20.dp)) }
-        item { Spacer(modifier = Modifier.height(2.dp)) }
     }
 }
 
@@ -594,9 +619,19 @@ private fun DenseRow(accent: Color, modifier: Modifier) {
     }
 }
 
-/** Slider that resizes the simulated window; the layout follows the width class it falls in. */
+/**
+ * Slider that resizes the simulated window; the layout follows the width class it falls in. The
+ * switch below hands the width over to the real window.
+ */
 @Composable
-private fun WidthControl(widthDp: Float, onWidthChange: (Float) -> Unit, modifier: Modifier = Modifier) {
+private fun WidthControl(
+    widthDp: Float,
+    onWidthChange: (Float) -> Unit,
+    realWidthDp: Float,
+    followWindow: Boolean,
+    onFollowWindowChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val widthClass = widthClassOf(widthDp)
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -638,6 +673,27 @@ private fun WidthControl(widthDp: Float, onWidthChange: (Float) -> Unit, modifie
                 fontSize = 13.sp,
                 lineHeight = 18.sp
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp)
+                    .toggleable(value = followWindow, role = Role.Switch, onValueChange = onFollowWindowChange),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(text = "Follow this window", color = Ink, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "${realWidthDp.roundToInt()} dp now · ${widthClassOf(realWidthDp).label}",
+                        color = Muted,
+                        fontSize = 13.sp
+                    )
+                }
+                Switch(
+                    checked = followWindow,
+                    onCheckedChange = null,
+                    colors = SwitchDefaults.colors(checkedTrackColor = Ink, checkedThumbColor = CardColor)
+                )
+            }
         }
     }
 }

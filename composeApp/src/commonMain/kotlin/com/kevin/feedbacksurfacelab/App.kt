@@ -68,6 +68,7 @@ import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.StatusDot
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.launch
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -324,7 +325,7 @@ private fun MockProductSurface(
                     Text(
                         modifier = Modifier.padding(12.dp),
                         text = "Offline mode: changes sync when the network returns.",
-                        color = Blue,
+                        color = Blue.asText,
                         fontWeight = FontWeight.Bold,
                         lineHeight = 18.sp
                     )
@@ -385,7 +386,7 @@ private fun MockProductSurface(
                         lineHeight = 18.sp
                     )
                     TextButton(onClick = onDismissBlocking) {
-                        Text("Reconnect", color = Slate, fontWeight = FontWeight.Black)
+                        Text("Reconnect", color = Slate.asText, fontWeight = FontWeight.Black)
                     }
                 }
             }
@@ -413,7 +414,7 @@ private fun FieldPreview(label: String, value: String, error: Boolean) {
         AnimatedVisibility(error) {
             Text(
                 text = "Use at least 3 characters.",
-                color = Danger,
+                color = Danger.asText,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
