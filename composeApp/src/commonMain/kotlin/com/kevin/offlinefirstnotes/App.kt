@@ -55,6 +55,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.delay
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -273,7 +274,7 @@ private fun NoteEditor(copy: SyncCopy, notes: NotesState) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                         text = if (copy.mode == SyncMode.Offline) "Local" else "Saved",
-                        color = if (copy.mode == SyncMode.Offline) Color.White else Green,
+                        color = if (copy.mode == SyncMode.Offline) Color.White else Green.asText,
                         fontWeight = FontWeight.Black,
                         fontSize = 12.sp
                     )

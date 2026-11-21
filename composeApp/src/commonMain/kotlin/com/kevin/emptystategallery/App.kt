@@ -68,6 +68,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.delay
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -274,7 +275,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
                     Text(
                         text = pattern.context.uppercase(),
                         style = MaterialTheme.typography.labelMedium,
-                        color = pattern.accent,
+                        color = pattern.accent.asText,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -294,7 +295,7 @@ private fun EmptyStatePreview(pattern: EmptyStatePattern) {
                         Text(
                             text = it,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = pattern.accent,
+                            color = pattern.accent.asText,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
@@ -348,7 +349,7 @@ private fun FilledContent(pattern: EmptyStatePattern, note: String?, onReset: ()
         Text(
             text = note ?: "Content is back. The empty state stepped aside.",
             style = MaterialTheme.typography.bodyMedium,
-            color = pattern.accent,
+            color = pattern.accent.asText,
             fontWeight = FontWeight.Bold
         )
         pattern.filledItems.forEach { item ->
@@ -377,7 +378,7 @@ private fun FilledContent(pattern: EmptyStatePattern, note: String?, onReset: ()
             modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = onReset
         ) {
-            Text("Show the empty state again", color = pattern.accent, fontWeight = FontWeight.Bold)
+            Text("Show the empty state again", color = pattern.accent.asText, fontWeight = FontWeight.Bold)
         }
     }
 }

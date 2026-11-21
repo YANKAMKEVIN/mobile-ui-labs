@@ -56,6 +56,7 @@ import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.SystemBackHandler
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 
 /** The UX question this lab asks; also its summary on the catalog. */
 internal const val PITCH =
@@ -399,7 +400,7 @@ private fun StackViewer(copy: NavCopy, nav: NavState) {
         }
         Text(
             text = if (nav.canGoBack()) "Next Back: ${nav.back().top}" else "Next Back: leaves the app",
-            color = copy.accent,
+            color = copy.accent.asText,
             fontWeight = FontWeight.Black,
             fontSize = 13.sp
         )

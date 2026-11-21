@@ -66,6 +66,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.launch
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -474,7 +475,7 @@ private fun ActionRow(label: String, accent: Color, destructive: Boolean) {
                     modifier = Modifier.size(16.dp),
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,
-                    tint = if (destructive) Danger else accent
+                    tint = (if (destructive) Danger else accent).asText
                 )
             }
             Text(

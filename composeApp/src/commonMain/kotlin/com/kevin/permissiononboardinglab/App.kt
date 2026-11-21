@@ -58,6 +58,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 
 /** The UX question this lab asks; also its summary on the catalog. */
 internal const val PITCH =
@@ -367,7 +368,7 @@ private fun DeniedState(step: StepCopy) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         FeatureRow("Manual reminders still work", step.accent)
         FeatureRow("Automatic timing is paused", step.accent)
-        Text("No guilt copy. No dead end.", color = step.accent, fontWeight = FontWeight.Black)
+        Text("No guilt copy. No dead end.", color = step.accent.asText, fontWeight = FontWeight.Black)
     }
 }
 
@@ -395,7 +396,7 @@ private fun SettingsState(step: StepCopy) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Reminders", color = Ink, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                Text("Off", color = step.accent, fontWeight = FontWeight.Black)
+                Text("Off", color = step.accent.asText, fontWeight = FontWeight.Black)
             }
         }
         Text("Use \"Turn on\" to simulate the user enabling it.", color = Muted, fontSize = 13.sp, lineHeight = 18.sp)

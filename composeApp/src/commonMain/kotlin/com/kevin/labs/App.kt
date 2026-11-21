@@ -75,6 +75,7 @@ import com.kevin.labs.ui.LocalLabSource
 import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.PredictiveBackHandler
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.flow.first
 
 /** The whole app; [darkTheme] follows the system setting unless forced. */
@@ -237,7 +238,7 @@ private fun LabRow(lab: Lab, visited: Boolean, onClick: () -> Unit) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = lab.number(),
-                    color = lab.accent,
+                    color = lab.accent.asText,
                     fontWeight = FontWeight.Black,
                     fontSize = 12.sp,
                     letterSpacing = 0.8.sp

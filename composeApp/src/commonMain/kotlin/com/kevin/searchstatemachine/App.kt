@@ -61,6 +61,7 @@ import com.kevin.labs.ui.Muted
 import com.kevin.labs.ui.Paper
 import com.kevin.labs.ui.RuleCard
 import com.kevin.labs.ui.swipeBetweenTabs
+import com.kevin.labs.ui.asText
 import kotlinx.coroutines.delay
 
 /** The UX question this lab asks; also its summary on the catalog. */
@@ -482,7 +483,7 @@ private fun EmptyContent(accent: Color, query: String, onPick: (String) -> Unit)
                 .background(accent.copy(alpha = 0.16f)),
             contentAlignment = Alignment.Center
         ) {
-            Text("0", color = accent, fontWeight = FontWeight.Black, fontSize = 24.sp)
+            Text("0", color = accent.asText, fontWeight = FontWeight.Black, fontSize = 24.sp)
         }
         Text(
             text = "No match for \"$query\"",
@@ -516,7 +517,7 @@ private fun ErrorContent(accent: Color, query: String, onRetry: () -> Unit, onPi
             ) {
                 Text(
                     text = "Search failed",
-                    color = accent,
+                    color = accent.asText,
                     fontWeight = FontWeight.Black,
                     fontSize = 20.sp
                 )
