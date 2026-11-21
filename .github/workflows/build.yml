@@ -26,11 +26,13 @@ jobs:
         run: ./gradlew :composeApp:assembleDebug
 
       - name: Run the commonTest suites
-        run: ./gradlew :composeApp:testDebugUnitTest
+        run: ./gradlew :composeApp:testDebugUnitTest :lab-ui:testDebugUnitTest
 
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: composeApp/build/reports/tests/
+          path: |
+            composeApp/build/reports/tests/
+            lab-ui/build/reports/tests/

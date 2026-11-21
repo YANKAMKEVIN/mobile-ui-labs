@@ -119,7 +119,8 @@ Prérequis : JDK 17+ et un SDK Android (`ANDROID_HOME`).
 ```bash
 ./gradlew :composeApp:assembleDebug          # APK Android : composeApp/build/outputs/apk/debug/
 ./gradlew :composeApp:installDebug           # sur un appareil ou un émulateur connecté
-./gradlew :composeApp:testDebugUnitTest      # tests commonTest (backstack, permission, recherche)
+./gradlew :composeApp:testDebugUnitTest      # tests commonTest des labs et du catalogue
+./gradlew :lab-ui:testDebugUnitTest          # tests du style commun (onglets, contraste des accents)
 ./gradlew :composeApp:compileKotlinIosArm64  # vérifie le code Kotlin iOS, même sans Mac
 ```
 
@@ -127,7 +128,8 @@ iOS : ouvrir `iosApp/iosApp.xcodeproj` dans Xcode (sur macOS) et lancer la cible
 appelle `./gradlew :composeApp:embedAndSignAppleFrameworkForXcode`. Renseigner `TEAM_ID` dans
 `iosApp/Configuration/Config.xcconfig` pour un appareil réel.
 
-La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests à chaque push et pull request.
+La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests des deux modules à chaque push sur
+`main` et à chaque pull request.
 
 ## Licence
 
