@@ -10,7 +10,7 @@ chaque lab compare plusieurs patterns côte à côte, avec des onglets pour pass
 d'accueil qui les liste.
 
 <p align="center">
-  <img src="images/catalog.png" alt="Écran d'accueil listant les dix labs" width="260" />
+  <img src="images/catalog.png" alt="Écran d'accueil : les labs numérotés et groupés par thème" width="260" />
 </p>
 
 ## Les labs
