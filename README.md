@@ -133,5 +133,4 @@ La CI (`.github/workflows/build.yml`) construit l'APK debug et lance les tests d
 
 ## Licence
 
-Aucune licence n'est fournie pour l'instant (choix de l'auteur) : sans licence explicite, le code reste
-« tous droits réservés ».
+Code distribué sous licence MIT, © 2026 Kevin Yankam : voir [LICENSE](LICENSE).
