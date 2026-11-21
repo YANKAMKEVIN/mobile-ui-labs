@@ -25,4 +25,15 @@ class WidthClassTest {
         assertEquals(0.5f, previewFraction(100f))
         assertEquals(0.75f, previewFraction((MIN_PREVIEW_WIDTH + MAX_PREVIEW_WIDTH) / 2))
     }
+
+    @Test
+    fun followingTheWindowKeepsTheRealWidthInsideTheSlider() {
+        assertEquals(412f, followedWidth(412f))
+        assertEquals(MIN_PREVIEW_WIDTH, followedWidth(280f))
+        assertEquals(MAX_PREVIEW_WIDTH, followedWidth(1920f))
+        // A phone in portrait, a small tablet and a desktop window land in the three classes.
+        assertEquals(WidthClass.Compact, widthClassOf(followedWidth(412f)))
+        assertEquals(WidthClass.Medium, widthClassOf(followedWidth(673f)))
+        assertEquals(WidthClass.Expanded, widthClassOf(followedWidth(1920f)))
+    }
 }

@@ -20,8 +20,9 @@ d'accueil qui les liste.
 Un layout adaptatif n'est pas une grille qui s'étire : c'est une décision de hiérarchie. Le lab montre la même
 expérience en compact (navigation basse), medium (rail), expanded (liste + détail), pliable (séparation physique)
 et dense. Les cinq dispositions sont des maquettes commentées ; un curseur de largeur fait basculer la maquette
-de la navigation basse au rail puis à liste + détail aux seuils de 600 et 840 dp. Ce n'est pas encore un vrai
-layout qui réagit à la taille de la fenêtre.
+de la navigation basse au rail puis à liste + détail aux seuils de 600 et 840 dp. L'interrupteur « Follow this
+window » lui donne la largeur réelle de la fenêtre et la suit (rotation, écran partagé, pliage) ; les maquettes
+elles-mêmes restent des dessins, pas des écrans d'app.
 
 <p align="center"><img src="images/adaptive-layout-lab.png" alt="Adaptive Layout Lab" width="260" /></p>
 
