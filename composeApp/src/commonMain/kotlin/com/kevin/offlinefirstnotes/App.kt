@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kevin.labs.ui.CardColor
@@ -321,7 +325,7 @@ private fun NotesActions(copy: SyncCopy, notes: NotesState, onAction: (NotesActi
             }
         } else {
             Button(
-                onClick = { onAction(NotesAction.Write(LOCAL_LINES[notes.local.lines().size % LOCAL_LINES.size])) },
+                onClick = { onAction(NotesAction.Write(nextLine(notes.local, LOCAL_LINES))) },
                 colors = buttonColors
             ) {
                 Text("Write a line", fontWeight = FontWeight.Bold)
@@ -335,7 +339,7 @@ private fun NotesActions(copy: SyncCopy, notes: NotesState, onAction: (NotesActi
                 }
             }
             OutlinedButton(
-                onClick = { onAction(NotesAction.RemoteWrite(REMOTE_LINES[notes.remote.lines().size % REMOTE_LINES.size])) }
+                onClick = { onAction(NotesAction.RemoteWrite(nextLine(notes.remote, REMOTE_LINES))) }
             ) {
                 Text("Edit on another device", color = Ink)
             }
@@ -348,7 +352,7 @@ private fun SyncTimeline(copy: SyncCopy, notes: NotesState) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(234.dp),
+            .heightIn(min = 234.dp),
         shape = RoundedCornerShape(22.dp),
         color = Paper,
         border = BorderStroke(1.dp, Line)
@@ -408,7 +412,8 @@ private fun ConflictBox(conflict: Conflict, accent: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(74.dp)
+            .height(IntrinsicSize.Min)
+            .heightIn(min = 74.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(CardColor)
             .padding(10.dp),
@@ -423,14 +428,22 @@ private fun ConflictBox(conflict: Conflict, accent: Color) {
 private fun VersionCard(label: String, detail: String, color: Color, modifier: Modifier) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxHeight()
             .clip(RoundedCornerShape(12.dp))
             .background(color.copy(alpha = if (color == Line) 0.45f else 0.16f))
             .padding(9.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(label, color = Ink, fontWeight = FontWeight.Black, fontSize = 12.sp)
-        Text(detail, color = Muted, fontWeight = FontWeight.Bold, fontSize = 12.sp, maxLines = 1)
+        Text(
+            text = detail,
+            color = Muted,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

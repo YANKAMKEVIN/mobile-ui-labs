@@ -126,4 +126,13 @@ class NotesSyncTest {
             assertEquals(mode, reduce(NotesState(), NotesAction.JumpTo(mode)).mode)
         }
     }
+
+    @Test
+    fun nextLineAddsSomethingNewBeforeRepeating() {
+        val queued = preset(SyncMode.Queue).local
+        assertEquals(LOCAL_LINES[2], nextLine(queued, LOCAL_LINES))
+        val all = LOCAL_LINES.fold(NOTE_START, ::appendLine)
+        assertTrue(nextLine(all, LOCAL_LINES) in LOCAL_LINES)
+        assertEquals(REMOTE_LINES[0], nextLine(NOTE_START, REMOTE_LINES))
+    }
 }

@@ -61,6 +61,12 @@ internal const val NOTE_START = "Museum list, quiet cafe, evening walk near the 
 internal val LOCAL_LINES = listOf("Add receipts later.", "Book the cafe for 7 pm.", "Pack the rain jacket.")
 internal val REMOTE_LINES = listOf("Train back at 18:40.", "Ask Sam about the museum pass.")
 
+/** The first of [lines] the note does not have yet, so each tap adds something new; then they repeat. */
+internal fun nextLine(note: String, lines: List<String>): String {
+    val present = note.lines()
+    return lines.firstOrNull { it !in present } ?: lines[present.size % lines.size]
+}
+
 internal fun appendLine(note: String, line: String): String = if (note.isEmpty()) line else "$note\n$line"
 
 internal fun reduce(state: NotesState, action: NotesAction): NotesState = when (action) {
